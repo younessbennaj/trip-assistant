@@ -11,7 +11,7 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "src/**/*.{ts,tsx,js,jsx,json}": "eslint --cache"
+    "src/**/*.{ts,tsx,js,jsx,json}": ["eslint --cache", "prettier --write"]
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
