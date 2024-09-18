@@ -11,7 +11,10 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "src/**/*.{ts,tsx,js,jsx,json}": ["eslint --cache", "prettier --write"]
+    "src/**/*.{ts,tsx,js,jsx,json}": [
+      "eslint --cache",
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
@@ -32,6 +35,7 @@
     "globals": "^15.9.0",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
