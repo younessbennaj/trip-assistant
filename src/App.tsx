@@ -10,14 +10,14 @@ export const supabase = createClient(
 
 function App() {
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+          supabase.auth.getSession().then(({ data }) => {
       console.log("data", data);
-    });
+          });
   }, []);
 
   return (
     <main>
-      <h1>Main Layout here</h1>
+          <h1>Main Layout here</h1>
       <Link to="/signup">Sign up</Link>
     </main>
   );
