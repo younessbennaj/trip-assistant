@@ -2,6 +2,7 @@ import { AuthError } from "@supabase/supabase-js";
 import { useState } from "react";
 import { supabase } from "../../App";
 import styles from "./SignUpForm.module.css";
+import Input from "../Input";
 
 function SignUpForm() {
   const [credentials, setCredentials] = useState({
@@ -46,7 +47,7 @@ function SignUpForm() {
   return (
     <div>
       <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.field}>
+        {/* <div className={styles.field}>
           <label htmlFor="email">Email</label>
           <input
             className={styles.input}
@@ -57,7 +58,15 @@ function SignUpForm() {
             type="email"
             value={credentials.email}
           />
-        </div>
+        </div> */}
+        <Input
+          id="email"
+          label="Email"
+          name="email"
+          onChange={handleChange}
+          placeholder="test@email.com"
+          value={credentials.email}
+        />
         <div className={styles.field}>
           <label htmlFor="password">Password</label>
           <input
