@@ -11,13 +11,17 @@ export const supabase = createClient(
 
 function App() {
   const { session } = useContext(AuthContext);
+
   return (
     <main>
       <h1>Main Layout here</h1>
       {session ? (
         <Link to="/logout">Logout</Link>
       ) : (
-        <Link to="/signup">Sign up</Link>
+        <div style={{ display: "flex", gap: "16px" }}>
+          <Link to="/signin">Sign in</Link>
+          <Link to="/signup">Sign up</Link>
+        </div>
       )}
     </main>
   );

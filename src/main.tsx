@@ -1,15 +1,12 @@
-import { StrictMode, useContext, useEffect } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SignUp from "./components/SignUp/index.tsx";
 import App from "./App.tsx";
 import SignIn from "./components/SignIn/index.tsx";
-import AuthProvider, { AuthContext } from "./components/AuthProvider/index.tsx";
+import AuthProvider from "./components/AuthProvider/index.tsx";
+import Logout from "./components/Logout/index.tsx";
 
 const router = createBrowserRouter([
   {
@@ -29,14 +26,6 @@ const router = createBrowserRouter([
     element: <Logout />,
   },
 ]);
-
-function Logout() {
-  const { setSession } = useContext(AuthContext);
-  useEffect(() => {
-    setSession(null);
-  }, [setSession]);
-  return <Navigate to="/" />;
-}
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

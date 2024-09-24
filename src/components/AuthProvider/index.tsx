@@ -2,7 +2,6 @@ import { Session } from "@supabase/supabase-js";
 import { createContext, useEffect, useState } from "react";
 import { supabase } from "../../App";
 
-// Create an auth context
 export const AuthContext = createContext<{
   session: Session | null;
   setSession: (session: Session | null) => void;
