@@ -1,7 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
-import { useEffect } from "react";
 import "./App.css";
 import { Link } from "react-router-dom";
+import { AuthContext } from "./components/AuthProvider";
+import { useContext } from "react";
 
 export const supabase = createClient(
   `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co`,
@@ -9,16 +10,15 @@ export const supabase = createClient(
 );
 
 function App() {
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      console.log("data", data);
-    });
-  }, []);
-
+  const { session } = useContext(AuthContext);
   return (
     <main>
       <h1>Main Layout here</h1>
-      <Link to="/signup">Sign up</Link>
+      {session ? (
+        <Link to="/logout">Logout</Link>
+      ) : (
+        <Link to="/signup">Sign up</Link>
+      )}
     </main>
   );
 }
