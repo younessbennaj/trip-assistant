@@ -5,6 +5,10 @@
   border: 1px solid #e5e7eb;
 }
 
+.input:focus {
+  border-color: #646cff;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;

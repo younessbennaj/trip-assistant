@@ -1,34 +1,15 @@
+import { ComponentPropsWithRef } from "react";
 import styles from "./input.module.css";
 
-function Input({
-  id,
-  label,
-  name,
-  onChange,
-  placeholder,
-  value,
-  type = "text",
-}: {
-  id: string;
+type InputProps = ComponentPropsWithRef<"input"> & {
   label: string;
-  name: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-  value: string;
-  type?: string;
-}) {
+};
+
+function Input({ id, label, type = "text", ...props }: InputProps) {
   return (
     <div className={styles.wrapper}>
       <label htmlFor={id}>{label}</label>
-      <input
-        className={styles.input}
-        id={id}
-        name={name}
-        onChange={onChange}
-        placeholder={placeholder}
-        type={type}
-        value={value}
-      />
+      <input id={id} className={styles.input} type={type} {...props} />
     </div>
   );
 }

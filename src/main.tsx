@@ -7,23 +7,29 @@ import App from "./App.tsx";
 import SignIn from "./components/SignIn/index.tsx";
 import AuthProvider from "./components/AuthProvider/index.tsx";
 import Logout from "./components/Logout/index.tsx";
+import Layout from "./components/Layout/index.tsx";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <App />,
-  },
-  {
-    path: "/signup",
-    element: <SignUp />,
-  },
-  {
-    path: "/signin",
-    element: <SignIn />,
-  },
-  {
-    path: "/logout",
-    element: <Logout />,
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <App />,
+      },
+      {
+        path: "/signup",
+        element: <SignUp />,
+      },
+      {
+        path: "/signin",
+        element: <SignIn />,
+      },
+      {
+        path: "/logout",
+        element: <Logout />,
+      },
+    ],
   },
 ]);
 

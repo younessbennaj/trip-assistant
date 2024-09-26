@@ -1,0 +1,9 @@
+.sidebar {
+  padding: 24px;
+}
+
+.layout {
+  height: calc(100vh); /* Hauteur totale - padding */
+  padding: 24px;
+  box-sizing: border-box;
+}

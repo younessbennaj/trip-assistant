@@ -1,10 +1,14 @@
 import { AuthError } from "@supabase/supabase-js";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { supabase } from "../../App";
 import styles from "./SignUpForm.module.css";
 import Input from "../Input";
+import { AuthContext } from "../AuthProvider";
+import Button from "../Button";
 
 function SignUpForm() {
+  const { setSession } = useContext(AuthContext);
+
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -22,6 +26,7 @@ function SignUpForm() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setError(null);
     signUpNewUser(credentials);
   }
 
@@ -38,27 +43,19 @@ function SignUpForm() {
       password,
     });
 
-    setError(error);
+    if (error) {
+      setError(error);
+    }
 
-    console.log(data);
+    if (data) {
+      setSession(data.session);
+    }
 
     setLoading(false);
   }
   return (
-    <div>
+    <div className={styles.wrapper}>
       <form className={styles.form} onSubmit={handleSubmit}>
-        {/* <div className={styles.field}>
-          <label htmlFor="email">Email</label>
-          <input
-            className={styles.input}
-            id="email"
-            name="email"
-            onChange={handleChange}
-            placeholder="test@email.com"
-            type="email"
-            value={credentials.email}
-          />
-        </div> */}
         <Input
           id="email"
           label="Email"
@@ -66,23 +63,21 @@ function SignUpForm() {
           onChange={handleChange}
           placeholder="test@email.com"
           value={credentials.email}
+          type="email"
         />
-        <div className={styles.field}>
-          <label htmlFor="password">Password</label>
-          <input
-            className={styles.input}
-            id="password"
-            minLength={5}
-            name="password"
-            onChange={handleChange}
-            placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
-            type="password"
-            value={credentials.password}
-          />
-        </div>
-        <button className={styles.button} disabled={loading} type="submit">
-          Signin Up
-        </button>
+        <Input
+          id="password"
+          label="Password"
+          name="password"
+          onChange={handleChange}
+          placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
+          value={credentials.password}
+          type="password"
+          minLength={6}
+        />
+        <Button type="submit" disabled={loading}>
+          Create account
+        </Button>
       </form>
 
       {error ? (
