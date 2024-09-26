@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import "./App.css";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { AuthContext } from "./components/AuthProvider";
 import { useContext } from "react";
 
@@ -11,6 +11,10 @@ export const supabase = createClient(
 
 function App() {
   const { session } = useContext(AuthContext);
+
+  if (!session) {
+    return <Navigate to="/signin" />;
+  }
 
   return (
     <main>

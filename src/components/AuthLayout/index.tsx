@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import styles from "./Layout.module.css";
 
-function Layout() {
+function AuthLayout() {
   return (
     <div className={styles.layout}>
       <div className="columns">
@@ -28,4 +28,4 @@ function Layout() {
   );
 }
 
-export default Layout;
+export default AuthLayout;
