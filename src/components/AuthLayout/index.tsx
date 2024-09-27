@@ -1,7 +1,14 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import styles from "./Layout.module.css";
+import { useAuth } from "../../hooks/use-auth";
 
 function AuthLayout() {
+  const { session } = useAuth();
+
+  if (session) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <div className={styles.layout}>
       <div className="columns">

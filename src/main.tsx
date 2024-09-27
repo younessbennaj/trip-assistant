@@ -9,6 +9,7 @@ import AuthProvider from "./components/AuthProvider/index.tsx";
 import Logout from "./components/Logout/index.tsx";
 import AuthLayout from "./components/AuthLayout/index.tsx";
 import MainLayout from "./components/MainLayout/index.tsx";
+import ProfileSettings from "./components/ProfileSettings/index.tsx";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <App />,
+      },
+      {
+        path: "/profile",
+        element: <ProfileSettings />,
       },
     ],
   },

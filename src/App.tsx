@@ -16,7 +16,11 @@ function App() {
     return <Navigate to="/signin" />;
   }
 
-  return <>Main</>;
+  return (
+    <>
+      <h1>Successfully logged in !</h1>
+    </>
+  );
 }
 
 export default App;
