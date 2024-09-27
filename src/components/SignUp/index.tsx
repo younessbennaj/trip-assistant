@@ -1,44 +1,27 @@
 import { useContext } from "react";
 import SignUpForm from "../SignUpForm";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { AuthContext } from "../AuthProvider";
+import AuthWrapper from "../AuthWrapper";
 
 function SignUp() {
-  const { session, setSession } = useContext(AuthContext);
-  console.log("session", session);
+  const { session } = useContext(AuthContext);
+
   if (session) {
     return <Navigate to="/" />;
   }
   return (
-    <>
-      <h2>Create your account</h2>
-      <p>Enter the fields below to get started</p>
+    <AuthWrapper
+      title="Create your account"
+      description="Enter the fields below to get started"
+      helpText={
+        <>
+          You already have an account? <Link to="/signin">Log in</Link>
+        </>
+      }
+    >
       <SignUpForm />
-      <button
-        onClick={() => {
-          setSession({
-            expires_in: 3600,
-            token_type: "bearer",
-            user: {
-              id: "user_id",
-              email: "user@example.com",
-              app_metadata: {},
-              user_metadata: {},
-              aud: "",
-              created_at: "",
-            },
-            access_token: "",
-            refresh_token: "",
-          });
-        }}
-      >
-        Click me
-      </button>
-      <p>
-        You already have an account?{" "}
-        <span style={{ color: "#007bff" }}>Log in</span>
-      </p>
-    </>
+    </AuthWrapper>
   );
 }
 

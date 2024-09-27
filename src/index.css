@@ -11,6 +11,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -22,6 +26,43 @@ a:hover {
 
 body {
   margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
+  height: 100%;
+  margin: 0;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+  color: #677489;
+}
+
+.columns {
+  display: flex;
+  flex-grow: 1;
+  height: 100%;
+}
+
+main {
+  flex-grow: 1;
+}
+
+aside {
+  flex-shrink: 0;
+  width: 360px;
+  background-color: #646cff;
+  color: white;
+  border-radius: 8px;
+}
+
+aside p {
+  color: white;
 }

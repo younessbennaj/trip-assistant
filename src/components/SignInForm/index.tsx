@@ -1,12 +1,12 @@
 import { AuthError } from "@supabase/supabase-js";
 import { useContext, useState } from "react";
 import { supabase } from "../../App";
-import styles from "./SignUpForm.module.css";
+import styles from "./SignInForm.module.css";
 import Input from "../Input";
 import { AuthContext } from "../AuthProvider";
 import Button from "../Button";
 
-function SignUpForm() {
+function SignInForm() {
   const { setSession } = useContext(AuthContext);
 
   const [credentials, setCredentials] = useState({
@@ -27,32 +27,30 @@ function SignUpForm() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
-    signUpNewUser(credentials);
+    signInWithEmail(credentials);
   }
 
-  async function signUpNewUser({
-    email,
-    password,
-  }: {
+  async function signInWithEmail(credentials: {
     email: string;
     password: string;
   }) {
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
+    const { data } = await supabase.auth.signInWithPassword({
+      email: credentials.email,
+      password: credentials.password,
     });
-
-    if (error) {
-      setError(error);
-    }
 
     if (data) {
       setSession(data.session);
     }
 
+    if (error) {
+      setError(error);
+    }
+
     setLoading(false);
   }
+
   return (
     <div className={styles.wrapper}>
       <form className={styles.form} onSubmit={handleSubmit}>
@@ -89,4 +87,4 @@ function SignUpForm() {
   );
 }
 
-export default SignUpForm;
+export default SignInForm;
