@@ -23,6 +23,10 @@ const router = createBrowserRouter([
         path: "/profile",
         element: <ProfileSettings />,
       },
+      {
+        path: "/logout",
+        element: <Logout />,
+      },
     ],
   },
   {
@@ -35,10 +39,6 @@ const router = createBrowserRouter([
       {
         path: "/signin",
         element: <SignIn />,
-      },
-      {
-        path: "/logout",
-        element: <Logout />,
       },
     ],
   },
