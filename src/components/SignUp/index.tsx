@@ -1,15 +1,8 @@
-import { useContext } from "react";
 import SignUpForm from "../SignUpForm";
-import { Link, Navigate } from "react-router-dom";
-import { AuthContext } from "../AuthProvider";
+import { Link } from "react-router-dom";
 import AuthWrapper from "../AuthWrapper";
 
 function SignUp() {
-  const { session } = useContext(AuthContext);
-
-  if (session) {
-    return <Navigate to="/" />;
-  }
   return (
     <AuthWrapper
       title="Create your account"

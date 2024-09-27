@@ -6,13 +6,15 @@ import Input from "../Input";
 import { AuthContext } from "../AuthProvider";
 import Button from "../Button";
 
+const CREDENTIALS = {
+  email: "test-02@test.com",
+  password: "123456",
+};
+
 function SignInForm() {
   const { setSession } = useContext(AuthContext);
 
-  const [credentials, setCredentials] = useState({
-    email: "",
-    password: "",
-  });
+  const [credentials, setCredentials] = useState(CREDENTIALS);
   const [error, setError] = useState<AuthError | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -74,7 +76,7 @@ function SignInForm() {
           minLength={6}
         />
         <Button type="submit" disabled={loading}>
-          Create account
+          Sign In
         </Button>
       </form>
 

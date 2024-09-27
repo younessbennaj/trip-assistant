@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import "./App.css";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { AuthContext } from "./components/AuthProvider";
 import { useContext } from "react";
 
@@ -17,17 +17,9 @@ function App() {
   }
 
   return (
-    <main>
-      <h1>Main Layout here</h1>
-      {session ? (
-        <Link to="/logout">Logout</Link>
-      ) : (
-        <div style={{ display: "flex", gap: "16px" }}>
-          <Link to="/signin">Sign in</Link>
-          <Link to="/signup">Sign up</Link>
-        </div>
-      )}
-    </main>
+    <>
+      <h1>Successfully logged in !</h1>
+    </>
   );
 }
 
