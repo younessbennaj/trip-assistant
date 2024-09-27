@@ -1,26 +1,18 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SignUp from "./components/SignUp/index.tsx";
 import App from "./App.tsx";
 import SignIn from "./components/SignIn/index.tsx";
 import AuthProvider from "./components/AuthProvider/index.tsx";
 import Logout from "./components/Logout/index.tsx";
 import AuthLayout from "./components/AuthLayout/index.tsx";
-
-function Layout() {
-  return (
-    <div>
-      <h1>Layout</h1>
-      <Outlet />
-    </div>
-  );
-}
+import MainLayout from "./components/MainLayout/index.tsx";
 
 const router = createBrowserRouter([
   {
-    element: <Layout />,
+    element: <MainLayout />,
     children: [
       {
         path: "/",
