@@ -1,22 +1,13 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../components/AuthProvider";
-import { supabase } from "../App";
-
-async function signInWithEmail(credentials: {
-  email: string;
-  password: string;
-}) {
-  return supabase.auth.signInWithPassword({
-    email: credentials.email,
-    password: credentials.password,
-  });
-}
+import { AuthError } from "@supabase/supabase-js";
+import { signInWithEmail, signOut, signUpWithEmail } from "../api/auth";
 
 export const useAuth = () => {
   const { session, setSession } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  function login(credentials: { email: string; password: string }) {
+  const [error, setError] = useState<AuthError | null>(null);
+  async function login(credentials: { email: string; password: string }) {
     setError(null);
     setLoading(true);
     return signInWithEmail(credentials)
@@ -33,9 +24,39 @@ export const useAuth = () => {
         setLoading(false);
       });
   }
+
+  async function signup(credentials: { email: string; password: string }) {
+    setError(null);
+    setLoading(true);
+    return signUpWithEmail(credentials)
+      .then(({ error, data }) => {
+        if (error) {
+          throw error;
+        }
+        setSession(data?.session);
+      })
+      .catch((error) => {
+        setError(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
+  function logout() {
+    signOut()
+      .then(() => {
+        setSession(null);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  }
   return {
     session,
     login,
+    logout,
+    signup,
     loading,
     error,
   };

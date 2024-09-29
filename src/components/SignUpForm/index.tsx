@@ -1,24 +1,19 @@
-import { AuthError } from "@supabase/supabase-js";
-import { useContext, useState } from "react";
-import { supabase } from "../../App";
+import { useState } from "react";
 import styles from "./SignUpForm.module.css";
 import Input from "../Input";
-import { AuthContext } from "../AuthProvider";
 import Button from "../Button";
+import { useAuth } from "../../hooks/use-auth";
 
 function SignUpForm() {
-  const { setSession } = useContext(AuthContext);
+  const { signup, loading, error } = useAuth();
 
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState<AuthError | null>(null);
-  const [loading, setLoading] = useState(false);
 
   // is necessary ? https://react.dev/reference/react/useState#updating-state-based-on-the-previous-state
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setError(null);
     setCredentials((prevCredentials) => {
       return { ...prevCredentials, [event.target.name]: event.target.value };
     });
@@ -26,33 +21,9 @@ function SignUpForm() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setError(null);
-    signUpNewUser(credentials);
+    signup(credentials);
   }
 
-  async function signUpNewUser({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }) {
-    setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error);
-    }
-
-    if (data) {
-      setSession(data.session);
-    }
-
-    setLoading(false);
-  }
   return (
     <div className={styles.wrapper}>
       <form className={styles.form} onSubmit={handleSubmit}>
