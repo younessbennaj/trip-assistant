@@ -1,10 +1,9 @@
 import { AuthError } from "@supabase/supabase-js";
-import { useContext, useState } from "react";
-import { supabase } from "../../App";
+import { useState } from "react";
 import styles from "./SignInForm.module.css";
 import Input from "../Input";
-import { AuthContext } from "../AuthProvider";
 import Button from "../Button";
+import { useAuth } from "../../hooks/use-auth";
 
 const CREDENTIALS = {
   email: "test-02@test.com",
@@ -12,13 +11,10 @@ const CREDENTIALS = {
 };
 
 function SignInForm() {
-  const { setSession } = useContext(AuthContext);
-
+  const { login, loading } = useAuth();
   const [credentials, setCredentials] = useState(CREDENTIALS);
   const [error, setError] = useState<AuthError | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  // is necessary ? https://react.dev/reference/react/useState#updating-state-based-on-the-previous-state
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setError(null);
     setCredentials((prevCredentials) => {
@@ -26,31 +22,10 @@ function SignInForm() {
     });
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
-    signInWithEmail(credentials);
-  }
-
-  async function signInWithEmail(credentials: {
-    email: string;
-    password: string;
-  }) {
-    setLoading(true);
-    const { data } = await supabase.auth.signInWithPassword({
-      email: credentials.email,
-      password: credentials.password,
-    });
-
-    if (data) {
-      setSession(data.session);
-    }
-
-    if (error) {
-      setError(error);
-    }
-
-    setLoading(false);
+    login(credentials);
   }
 
   return (
@@ -75,7 +50,7 @@ function SignInForm() {
           type="password"
           minLength={6}
         />
-        <Button type="submit" disabled={loading}>
+        <Button disabled={loading} type="submit">
           Sign In
         </Button>
       </form>
