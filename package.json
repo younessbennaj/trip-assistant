@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "prettier": "prettier --write 'src/**/*.{ts,tsx,js,jsx,json,md}'",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "vitest"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,json}": [
@@ -25,7 +26,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
-    "@types/react": "^18.3.3",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/jest": "^29.5.13",
+    "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "eslint": "^9.9.0",
@@ -35,10 +41,12 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
     "husky": "^9.1.6",
+    "jsdom": "^25.0.1",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1"
+    "vite": "^5.4.1",
+    "vitest": "^2.1.1"
   }
 }
