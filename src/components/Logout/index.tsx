@@ -1,19 +1,12 @@
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../AuthProvider";
-import { supabase } from "../../App";
+import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
-
-async function signOut() {
-  await supabase.auth.signOut();
-}
+import { useAuth } from "../../hooks/use-auth";
 
 function Logout() {
-  const { setSession } = useContext(AuthContext);
+  const { logout } = useAuth();
   useEffect(() => {
-    signOut().then(() => {
-      setSession(null);
-    });
-  }, [setSession]);
+    logout();
+  }, [logout]);
   return <Navigate to="/" />;
 }
 
