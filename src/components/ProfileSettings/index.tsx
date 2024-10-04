@@ -1,6 +1,7 @@
 import { useAuth } from "../../hooks/use-auth";
-import CityAutocomplete from "../CityAutocomplete";
+// import CityAutocomplete from "../CityAutocomplete";
 import Input from "../Input";
+import LocationSelect from "../LocationSelect";
 
 function ProfileSettings() {
   const { session } = useAuth();
@@ -24,7 +25,8 @@ function ProfileSettings() {
           disabled
         />
       </form>
-      <CityAutocomplete />
+      {/* <CityAutocomplete /> */}
+      <LocationSelect />
     </>
   );
 }
