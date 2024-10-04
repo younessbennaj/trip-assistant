@@ -4,8 +4,20 @@ import { City } from "../components/CityAutocomplete/types";
 
 const getCities = {
   enabled: true,
-  handler: http.get("/api/cities", () => {
-    return HttpResponse.json(cities as City[]);
+  handler: http.get("/api/cities", ({ request }) => {
+    // Extract the full URL from the request
+    const fullUrl = new URL(request.url);
+
+    // Extract the search query from the URL
+    const searchParams = new URLSearchParams(fullUrl.search);
+    const searchQuery = searchParams.get("search")?.toLowerCase() || "";
+
+    // Filter cities based on the search query
+    const filteredCities = cities.filter((city) =>
+      city.city.toLowerCase().includes(searchQuery),
+    );
+
+    return HttpResponse.json(filteredCities as City[]);
   }),
 };
 

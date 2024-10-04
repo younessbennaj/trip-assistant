@@ -1,8 +1,10 @@
 import AsyncSelect from "react-select/async";
 import { City } from "../CityAutocomplete/types";
 
-async function fetchCities(): Promise<City[]> {
-  return fetch("/api/cities").then((response) => response.json());
+async function fetchCities(query: string): Promise<City[]> {
+  return fetch(`/api/cities?search=${query}`).then((response) =>
+    response.json(),
+  );
 }
 
 export interface CityOption {
@@ -27,7 +29,7 @@ function loadOptions(
   callback: (options: CityOption[]) => void,
 ) {
   console.log(inputValue);
-  fetchCities().then((data: City[]) => {
+  fetchCities(inputValue).then((data: City[]) => {
     callback(castCities(data));
   });
 }
