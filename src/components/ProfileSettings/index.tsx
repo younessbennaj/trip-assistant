@@ -1,5 +1,4 @@
 import { useAuth } from "../../hooks/use-auth";
-// import CityAutocomplete from "../CityAutocomplete";
 import Input from "../Input";
 import LocationSelect from "../LocationSelect";
 
@@ -25,8 +24,12 @@ function ProfileSettings() {
           disabled
         />
       </form>
-      {/* <CityAutocomplete /> */}
-      <LocationSelect />
+      <LocationSelect
+        onChange={(item) => {
+          console.log(item);
+          alert(`Selected city: ${item.city}`);
+        }}
+      />
     </>
   );
 }

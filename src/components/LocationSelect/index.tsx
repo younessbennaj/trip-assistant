@@ -7,7 +7,7 @@ async function fetchCities(query: string): Promise<City[]> {
   );
 }
 
-export interface CityOption {
+export interface CityOption extends City {
   value: string;
   label: string;
   isDisabled?: boolean;
@@ -21,6 +21,7 @@ function castCities(data: City[]): CityOption[] {
     }),
     label: city.city,
     isDisabled: false,
+    ...city,
   }));
 }
 
@@ -34,7 +35,18 @@ function loadOptions(
   });
 }
 
-function LocationSelect() {
-  return <AsyncSelect cacheOptions loadOptions={loadOptions} defaultOptions />;
+function LocationSelect({
+  onChange,
+}: {
+  onChange: (item: CityOption) => void;
+}) {
+  return (
+    <AsyncSelect
+      cacheOptions
+      loadOptions={loadOptions}
+      defaultOptions
+      onChange={(item) => onChange(item as CityOption)}
+    />
+  );
 }
 export default LocationSelect;
