@@ -1,0 +1,82 @@
+[
+  {
+    "city": "Paris",
+    "country": "France",
+    "latitude": 48.8566,
+    "longitude": 2.3522,
+    "formatted_address": "Paris, France",
+    "place_id": "ChIJD7fiBh9u5kcRYJSMaMOCCwQ"
+  },
+  {
+    "city": "New York",
+    "country": "United States",
+    "latitude": 40.7128,
+    "longitude": -74.006,
+    "formatted_address": "New York, NY, USA",
+    "place_id": "ChIJOwg_06VPwokRYv534QaPC8g"
+  },
+  {
+    "city": "Tokyo",
+    "country": "Japan",
+    "latitude": 35.6762,
+    "longitude": 139.6503,
+    "formatted_address": "Tokyo, Japan",
+    "place_id": "ChIJ51cu8IcbXWARiRtXIothAS4"
+  },
+  {
+    "city": "Sydney",
+    "country": "Australia",
+    "latitude": -33.8688,
+    "longitude": 151.2093,
+    "formatted_address": "Sydney NSW, Australia",
+    "place_id": "ChIJP3Sa8ziYEmsRUKgyFmh9AQM"
+  },
+  {
+    "city": "Berlin",
+    "country": "Germany",
+    "latitude": 52.52,
+    "longitude": 13.405,
+    "formatted_address": "Berlin, Germany",
+    "place_id": "ChIJAVkDPzdOqEcRcDteW0YgIQQ"
+  },
+  {
+    "city": "Toronto",
+    "country": "Canada",
+    "latitude": 43.651,
+    "longitude": -79.347,
+    "formatted_address": "Toronto, ON, Canada",
+    "place_id": "ChIJpTvG15DL1IkRd8S0KlBVNTI"
+  },
+  {
+    "city": "Rio de Janeiro",
+    "country": "Brazil",
+    "latitude": -22.9068,
+    "longitude": -43.1729,
+    "formatted_address": "Rio de Janeiro, State of Rio de Janeiro, Brazil",
+    "place_id": "ChIJW6AIkVXemwARTtIvZ2xC3FA"
+  },
+  {
+    "city": "Cape Town",
+    "country": "South Africa",
+    "latitude": -33.9249,
+    "longitude": 18.4241,
+    "formatted_address": "Cape Town, South Africa",
+    "place_id": "ChIJrXJ8c3XczB0R1MQ1geEJKVM"
+  },
+  {
+    "city": "Moscow",
+    "country": "Russia",
+    "latitude": 55.7558,
+    "longitude": 37.6173,
+    "formatted_address": "Moscow, Russia",
+    "place_id": "ChIJybDUc_xKtUYRTM9XV8zWRD0"
+  },
+  {
+    "city": "Mumbai",
+    "country": "India",
+    "latitude": 19.076,
+    "longitude": 72.8777,
+    "formatted_address": "Mumbai, Maharashtra, India",
+    "place_id": "ChIJwe1EZjDG5zsRaYxkjY_tpF0"
+  }
+]

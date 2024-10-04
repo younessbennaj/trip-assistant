@@ -1,8 +1,10 @@
 import { useAuth } from "../../hooks/use-auth";
+import CityAutocomplete from "../CityAutocomplete";
 import Input from "../Input";
 
 function ProfileSettings() {
   const { session } = useAuth();
+
   return (
     <>
       <h1
@@ -19,8 +21,10 @@ function ProfileSettings() {
           name="email"
           placeholder="example@email.com"
           value={session?.user?.email}
+          disabled
         />
       </form>
+      <CityAutocomplete />
     </>
   );
 }
