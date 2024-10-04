@@ -1,6 +1,7 @@
 import { useAuth } from "../../hooks/use-auth";
 import Input from "../Input";
 import LocationSelect from "../LocationSelect";
+import styles from "./ProfileSettings.module.css";
 
 function ProfileSettings() {
   const { session } = useAuth();
@@ -14,22 +15,25 @@ function ProfileSettings() {
       >
         Profile Settings
       </h1>
-      <form>
-        <Input
-          id="email"
-          label="Email"
-          name="email"
-          placeholder="example@email.com"
-          value={session?.user?.email}
-          disabled
-        />
+      <form className={styles.form}>
+        <div className={styles.field}>
+          <Input
+            id="email"
+            label="Email"
+            name="email"
+            placeholder="example@email.com"
+            value={session?.user?.email}
+            disabled
+          />
+        </div>
+        <div className={styles.field}>
+          <LocationSelect
+            onChange={(item) => {
+              console.log(item);
+            }}
+          />
+        </div>
       </form>
-      <LocationSelect
-        onChange={(item) => {
-          console.log(item);
-          alert(`Selected city: ${item.city}`);
-        }}
-      />
     </>
   );
 }

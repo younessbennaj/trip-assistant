@@ -1,5 +1,6 @@
 import AsyncSelect from "react-select/async";
 import { City } from "../CityAutocomplete/types";
+import styles from "../Input/Input.module.css";
 
 async function fetchCities(query: string): Promise<City[]> {
   return fetch(`/api/cities?search=${query}`).then((response) =>
@@ -41,12 +42,16 @@ function LocationSelect({
   onChange: (item: CityOption) => void;
 }) {
   return (
-    <AsyncSelect
-      cacheOptions
-      loadOptions={loadOptions}
-      defaultOptions
-      onChange={(item) => onChange(item as CityOption)}
-    />
+    <div className={styles.wrapper}>
+      <label htmlFor="location">Choose a city</label>
+      <AsyncSelect
+        id="location"
+        cacheOptions
+        loadOptions={loadOptions}
+        defaultOptions
+        onChange={(item) => onChange(item as CityOption)}
+      />
+    </div>
   );
 }
 export default LocationSelect;
