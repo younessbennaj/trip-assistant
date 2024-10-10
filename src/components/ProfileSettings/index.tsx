@@ -6,12 +6,12 @@ import LocationSelect from "../LocationSelect";
 import styles from "./ProfileSettings.module.css";
 import { supabase } from "../../api/auth";
 import Button from "../Button";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function ProfileSettings() {
+  const queryClient = useQueryClient();
   const { session } = useAuth();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarUrl] = useState<string | null>(null);
   const [location, setLocation] = useState<{
     city: string;
     country: string;
@@ -19,36 +19,6 @@ function ProfileSettings() {
     longitude: number;
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  console.log(avatarUrl);
-
-  // use tan stack query
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     const { data, error } = await supabase
-  //       .from("profiles")
-  //       .select("avatar_url, city, country, latitude, longitude")
-  //       .eq("id", session?.user?.id)
-  //       .single();
-
-  //     if (error) {
-  //       console.error("Error fetching profile:", error.message);
-  //       return;
-  //     }
-
-  //     if (data) {
-  //       setAvatarUrl(data.avatar_url);
-  //       setLocation({
-  //         city: data.city,
-  //         country: data.country,
-  //         latitude: data.latitude,
-  //         longitude: data.longitude,
-  //       });
-  //     }
-  //   };
-
-  //   fetchProfile();
-  // }, []);
 
   const {
     data,
@@ -71,24 +41,6 @@ function ProfileSettings() {
     },
   });
 
-  /*
-
-      ["profile", session?.user?.id],
-    async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("avatar_url, city, country, latitude, longitude")
-        .eq("id", session?.user?.id)
-        .single();
-
-      if (error) {
-        throw new Error(error.message);
-      }
-      return data;
-    },
-   */
-
-  console.log(data);
   console.log(error);
   console.log(profileLoading);
 
@@ -130,6 +82,9 @@ function ProfileSettings() {
       console.error("Error updating profile:", updateError.message);
     } else {
       console.log("Profile updated successfully!");
+      queryClient.invalidateQueries({
+        queryKey: ["profile", session?.user?.id],
+      });
     }
 
     setIsLoading(false);
@@ -149,6 +104,7 @@ function ProfileSettings() {
           <AvatarUploadField
             initialAvatar={data?.avatar_url}
             onFileSelect={setAvatarFile}
+            userId={session?.user?.id}
           />
         </div>
         <div className={styles.field}>
