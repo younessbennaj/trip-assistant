@@ -8,6 +8,7 @@ import Button from "../Button";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { updateProfile, uploadAvatar } from "../../api/profile";
 import { supabase } from "../../api";
+import ProfileSettingsSkeleton from "./ProfileSettingsSkeleton";
 
 function ProfileSettings() {
   const queryClient = useQueryClient();
@@ -82,6 +83,10 @@ function ProfileSettings() {
       setIsLoading(false);
     }
   };
+
+  if (profileIsLoading) {
+    return <ProfileSettingsSkeleton />;
+  }
 
   return (
     <>
