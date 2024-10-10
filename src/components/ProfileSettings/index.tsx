@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import AvatarUploadField from "../AvatarUploadField";
 import Input from "../Input";
@@ -6,11 +6,12 @@ import LocationSelect from "../LocationSelect";
 import styles from "./ProfileSettings.module.css";
 import { supabase } from "../../api/auth";
 import Button from "../Button";
+import { useQuery } from "@tanstack/react-query";
 
 function ProfileSettings() {
   const { session } = useAuth();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [avatarUrl] = useState<string | null>(null);
   const [location, setLocation] = useState<{
     city: string;
     country: string;
@@ -22,8 +23,41 @@ function ProfileSettings() {
   console.log(avatarUrl);
 
   // use tan stack query
-  useEffect(() => {
-    const fetchProfile = async () => {
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     const { data, error } = await supabase
+  //       .from("profiles")
+  //       .select("avatar_url, city, country, latitude, longitude")
+  //       .eq("id", session?.user?.id)
+  //       .single();
+
+  //     if (error) {
+  //       console.error("Error fetching profile:", error.message);
+  //       return;
+  //     }
+
+  //     if (data) {
+  //       setAvatarUrl(data.avatar_url);
+  //       setLocation({
+  //         city: data.city,
+  //         country: data.country,
+  //         latitude: data.latitude,
+  //         longitude: data.longitude,
+  //       });
+  //     }
+  //   };
+
+  //   fetchProfile();
+  // }, []);
+
+  const {
+    data,
+    error,
+    isLoading: profileLoading,
+  } = useQuery({
+    enabled: !!session?.user?.id,
+    queryKey: ["profile", session?.user?.id],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
         .select("avatar_url, city, country, latitude, longitude")
@@ -31,23 +65,32 @@ function ProfileSettings() {
         .single();
 
       if (error) {
-        console.error("Error fetching profile:", error.message);
-        return;
+        throw new Error(error.message);
       }
+      return data;
+    },
+  });
 
-      if (data) {
-        setAvatarUrl(data.avatar_url);
-        setLocation({
-          city: data.city,
-          country: data.country,
-          latitude: data.latitude,
-          longitude: data.longitude,
-        });
+  /*
+
+      ["profile", session?.user?.id],
+    async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("avatar_url, city, country, latitude, longitude")
+        .eq("id", session?.user?.id)
+        .single();
+
+      if (error) {
+        throw new Error(error.message);
       }
-    };
+      return data;
+    },
+   */
 
-    fetchProfile();
-  }, []);
+  console.log(data);
+  console.log(error);
+  console.log(profileLoading);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -104,7 +147,7 @@ function ProfileSettings() {
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.field}>
           <AvatarUploadField
-            initialAvatar={avatarUrl}
+            initialAvatar={data?.avatar_url}
             onFileSelect={setAvatarFile}
           />
         </div>

@@ -11,9 +11,7 @@ function AvatarUploadField({
   initialAvatar: string | null;
   onFileSelect: (file: File | null) => void;
 }) {
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(
-    initialAvatar,
-  );
+  const [avatarPreview, setAvatarPreview] = useState<string | null>();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,26 +47,16 @@ function AvatarUploadField({
 
   return (
     <div className={styles.Wrapper}>
-      {avatarPreview ? (
-        <Avatar.Root className={styles.AvatarRoot}>
-          <Avatar.Image
-            className={styles.AvatarImage}
-            src={avatarPreview ? avatarPreview : ""}
-            alt="avatar"
-          />
-          <Avatar.Fallback className={styles.AvatarFallback} delayMs={600}>
-            AA
-          </Avatar.Fallback>
-        </Avatar.Root>
-      ) : (
-        <Avatar.Root className={styles.AvatarRoot}>
-          <Avatar.Image
-            className={styles.AvatarImage}
-            src={avatarPlaceholder}
-            alt="avatar"
-          />
-        </Avatar.Root>
-      )}
+      <Avatar.Root className={styles.AvatarRoot}>
+        <Avatar.Image
+          className={styles.AvatarImage}
+          src={avatarPreview || initialAvatar || avatarPlaceholder}
+          alt="avatar"
+        />
+        <Avatar.Fallback className={styles.AvatarFallback} delayMs={600}>
+          AA
+        </Avatar.Fallback>
+      </Avatar.Root>
       <input
         hidden
         ref={inputRef}
