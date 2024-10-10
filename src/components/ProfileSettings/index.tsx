@@ -21,7 +21,7 @@ function ProfileSettings() {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data } = useQuery({
+  const { data, isLoading: profileIsLoading } = useQuery({
     enabled: !!session?.user?.id,
     queryKey: ["profile", session?.user?.id],
     queryFn: async () => {
@@ -37,6 +37,16 @@ function ProfileSettings() {
       return data;
     },
   });
+
+  const initialCity =
+    data?.city && data?.country && data?.latitude && data?.longitude
+      ? {
+          city: data.city,
+          country: data.country,
+          latitude: data.latitude,
+          longitude: data.longitude,
+        }
+      : null;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -101,17 +111,19 @@ function ProfileSettings() {
           />
         </div>
         <div className={styles.field}>
-          <LocationSelect
-            // initialLocation={location}
-            onChange={(item) => {
-              setLocation({
-                city: item.city,
-                country: item.country,
-                latitude: item.latitude,
-                longitude: item.longitude,
-              }); // Mettre à jour la localisation sélectionnée
-            }}
-          />
+          {profileIsLoading ? null : (
+            <LocationSelect
+              initialCity={initialCity}
+              onChange={(item) => {
+                setLocation({
+                  city: item.city,
+                  country: item.country,
+                  latitude: item.latitude,
+                  longitude: item.longitude,
+                });
+              }}
+            />
+          )}
         </div>
 
         <Button disabled={isLoading} style={{ alignSelf: "end" }}>
