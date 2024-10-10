@@ -1,6 +1,6 @@
 import { Session } from "@supabase/supabase-js";
 import { createContext, useEffect, useState } from "react";
-import { supabase } from "../../api/auth";
+import { supabase } from "../../api";
 
 export const AuthContext = createContext<{
   loading: boolean;

@@ -4,9 +4,10 @@ import AvatarUploadField from "../AvatarUploadField";
 import Input from "../Input";
 import LocationSelect from "../LocationSelect";
 import styles from "./ProfileSettings.module.css";
-import { supabase } from "../../api/auth";
 import Button from "../Button";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { updateProfile, uploadAvatar } from "../../api/profile";
+import { supabase } from "../../api";
 
 function ProfileSettings() {
   const queryClient = useQueryClient();
@@ -41,46 +42,35 @@ function ProfileSettings() {
     event.preventDefault();
     setIsLoading(true);
 
-    let avatarUrl = null;
+    try {
+      if (!session?.user?.id) {
+        throw new Error("User ID is not available");
+      }
+      let avatarUrl = null;
 
-    if (avatarFile) {
-      const { error } = await supabase.storage
-        .from("avatars")
-        .upload(`public/${avatarFile.name}`, avatarFile);
-
-      if (error) {
-        console.error("Error uploading file:", error.message);
-        return;
+      // Si l'utilisateur a sélectionné un fichier pour l'avatar, on l'upload
+      if (avatarFile) {
+        avatarUrl = await uploadAvatar(avatarFile); // Utilise la fonction utilitaire pour uploader l'image
       }
 
-      const { data: publicUrlData } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(`public/${avatarFile.name}`);
+      // Mise à jour du profil utilisateur avec l'avatar et la localisation
+      await updateProfile(session.user.id, avatarUrl, location);
 
-      avatarUrl = publicUrlData.publicUrl;
-    }
-
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({
-        avatar_url: avatarUrl,
-        city: location?.city,
-        country: location?.country,
-        latitude: location?.latitude,
-        longitude: location?.longitude,
-      })
-      .eq("id", session?.user?.id);
-
-    if (updateError) {
-      console.error("Error updating profile:", updateError.message);
-    } else {
-      console.log("Profile updated successfully!");
+      // Invalidation du cache pour rafraîchir les données du profil
       queryClient.invalidateQueries({
         queryKey: ["profile", session?.user?.id],
       });
-    }
 
-    setIsLoading(false);
+      console.log("Profile updated successfully!");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error updating profile:", error.message);
+      } else {
+        console.error("Unknown error:", error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

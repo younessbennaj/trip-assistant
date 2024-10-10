@@ -3,8 +3,8 @@ import { useRef, useState } from "react";
 import styles from "./Avatar.module.css";
 import avatarPlaceholder from "../../assets/avatar-placeholder-300x300.png";
 import { UploadCloud, Trash } from "react-feather";
-import { supabase } from "../../api/auth";
 import { useQueryClient } from "@tanstack/react-query";
+import { deleteAvatar } from "../../api/profile";
 
 function AvatarUploadField({
   initialAvatar,
@@ -50,42 +50,25 @@ function AvatarUploadField({
         inputRef.current.value = "";
       }
     } else if (initialAvatar) {
-      // Extraire le nom du fichier à partir de l'URL stockée en DB
-      const avatarFileName = initialAvatar.split("/").pop(); // Cela devrait récupérer 'avatar-2.jpeg'
-
-      if (avatarFileName) {
-        // Supprimer l'image du stockage avec le chemin correct
-        const { error: storageError } = await supabase.storage
-          .from("avatars")
-          .remove([`public/${avatarFileName}`]); // Envoie le chemin correct
-        if (storageError) {
-          console.error(
-            "Error deleting image from storage:",
-            storageError.message,
-          );
-          return;
+      try {
+        if (!userId) {
+          throw new Error("User ID is not available");
         }
+        await deleteAvatar(userId, initialAvatar); // Appel de la fonction deleteAvatar
 
-        // Mettre à jour la table 'profiles' pour supprimer la référence à l'image
-        const { error: updateError } = await supabase
-          .from("profiles")
-          .update({ avatar_url: null })
-          .eq("id", userId);
-
-        if (updateError) {
-          console.error("Error updating profile:", updateError.message);
-          return;
-        }
-
-        console.log(
-          "Image deleted successfully from storage and profile updated",
-        );
-        setAvatarPreview(null); // Affiche le placeholder
-        onFileSelect(null); // Avertit qu'il n'y a plus d'image sélectionnée
+        console.log("Avatar deleted and profile updated successfully.");
+        setAvatarPreview(null);
+        onFileSelect(null);
 
         queryClient.invalidateQueries({
           queryKey: ["profile", userId],
         });
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error("Error updating profile:", error.message);
+        } else {
+          console.error("Unknown error:", error);
+        }
       }
 
       if (inputRef.current) {
