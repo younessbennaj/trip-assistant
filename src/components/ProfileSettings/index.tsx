@@ -20,11 +20,7 @@ function ProfileSettings() {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    data,
-    error,
-    isLoading: profileLoading,
-  } = useQuery({
+  const { data } = useQuery({
     enabled: !!session?.user?.id,
     queryKey: ["profile", session?.user?.id],
     queryFn: async () => {
@@ -40,9 +36,6 @@ function ProfileSettings() {
       return data;
     },
   });
-
-  console.log(error);
-  console.log(profileLoading);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

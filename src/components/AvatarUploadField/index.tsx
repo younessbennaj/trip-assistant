@@ -55,14 +55,9 @@ function AvatarUploadField({
 
       if (avatarFileName) {
         // Supprimer l'image du stockage avec le chemin correct
-        console.log(
-          "Deleting image from storage and updating profile...",
-          avatarFileName,
-        );
-        const { data, error: storageError } = await supabase.storage
+        const { error: storageError } = await supabase.storage
           .from("avatars")
           .remove([`public/${avatarFileName}`]); // Envoie le chemin correct
-        console.log("data", data);
         if (storageError) {
           console.error(
             "Error deleting image from storage:",

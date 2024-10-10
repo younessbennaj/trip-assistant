@@ -31,7 +31,6 @@ function loadOptions(
   inputValue: string,
   callback: (options: CityOption[]) => void,
 ) {
-  console.log(inputValue);
   fetchCities(inputValue).then((data: City[]) => {
     callback(castCities(data));
   });
@@ -44,7 +43,7 @@ function LocationSelect({
 }) {
   return (
     <div className={styles.wrapper}>
-      <label htmlFor="location">Choose a city</label>
+      <label htmlFor="location">Choose your currenty city:</label>
       <AsyncSelect
         id="location"
         cacheOptions

@@ -51,8 +51,6 @@ function CityAutocomplete() {
           longitude: data.longitude,
         });
       }
-
-      console.log(data);
     };
 
     if (session) {
@@ -61,8 +59,6 @@ function CityAutocomplete() {
   }, [session]);
 
   const updateUserProfile = async (city: City) => {
-    console.log(city);
-    console.log(session?.user.id);
     const { error } = await supabase
       .from("profiles")
       .update({
@@ -99,7 +95,7 @@ function CityAutocomplete() {
 
   return (
     <div data-testid="home">
-      <label htmlFor="city-select">Choose a city:</label>
+      <label htmlFor="city-select">Choose your currenty city:</label>
       <select
         id="city-select"
         data-testid="city-select"
