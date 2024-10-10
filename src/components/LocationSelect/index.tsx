@@ -14,6 +14,7 @@ export interface CityOption extends City {
   isDisabled?: boolean;
 }
 
+// mapCityToCityOptions()
 function castCities(data: City[]): CityOption[] {
   return data.map((city) => ({
     value: JSON.stringify({
