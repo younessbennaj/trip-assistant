@@ -64,5 +64,6 @@ export const useAuth = () => {
     signup,
     loading,
     error,
+    userId: session?.user.id,
   };
 };
