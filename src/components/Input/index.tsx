@@ -1,9 +1,5 @@
-import { ComponentPropsWithRef } from "react";
 import styles from "./Input.module.css";
-
-type InputProps = ComponentPropsWithRef<"input"> & {
-  label: string;
-};
+import { InputProps } from "./types";
 
 function Input({ id, label, type = "text", ...props }: InputProps) {
   return (

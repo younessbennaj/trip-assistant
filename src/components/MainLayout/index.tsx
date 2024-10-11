@@ -3,9 +3,13 @@ import styles from "./MainLayout.module.css";
 import { useAuth } from "../../hooks/use-auth";
 
 function MainLayout() {
-  const { session } = useAuth();
+  const { session, sessionIsLoading } = useAuth();
 
-  if (!session) {
+  if (sessionIsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!session && !sessionIsLoading) {
     return <Navigate to="/signin" />;
   }
 

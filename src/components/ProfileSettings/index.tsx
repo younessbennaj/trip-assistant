@@ -1,29 +1,33 @@
-import { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import AvatarUploadField from "../AvatarUploadField";
-import Input from "../Input";
 import LocationSelect from "../LocationSelect";
 import styles from "./ProfileSettings.module.css";
-import { supabase } from "../../api/auth";
 import Button from "../Button";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "../../api";
+import ProfileSettingsSkeleton from "./ProfileSettingsSkeleton";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
 
-function ProfileSettings() {
-  const { session } = useAuth();
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [location, setLocation] = useState<{
+interface ProfileFormData {
+  avatarFile: File | null;
+  location: {
     city: string;
     country: string;
     latitude: number;
     longitude: number;
-  } | null>(null);
+  } | null;
+}
+
+function ProfileSettings() {
+  const queryClient = useQueryClient();
+  const { session } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(avatarUrl);
-
-  // use tan stack query
-  useEffect(() => {
-    const fetchProfile = async () => {
+  const { data, isLoading: profileIsLoading } = useQuery({
+    enabled: !!session?.user?.id,
+    queryKey: ["profile", session?.user?.id],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
         .select("avatar_url, city, country, latitude, longitude")
@@ -31,66 +35,80 @@ function ProfileSettings() {
         .single();
 
       if (error) {
-        console.error("Error fetching profile:", error.message);
-        return;
+        throw new Error(error.message);
       }
+      return data;
+    },
+  });
 
-      if (data) {
-        setAvatarUrl(data.avatar_url);
-        setLocation({
-          city: data.city,
-          country: data.country,
-          latitude: data.latitude,
-          longitude: data.longitude,
-        });
-      }
-    };
+  // Initialize form with React Hook Form
+  const {
+    // register,
+    setValue,
+    handleSubmit,
+    // watch,
+    // formState: { errors },
+  } = useForm<ProfileFormData>({
+    defaultValues: {
+      avatarFile: null,
+      location: data
+        ? {
+            city: data.city,
+            country: data.country,
+            latitude: data.latitude,
+            longitude: data.longitude,
+          }
+        : null,
+    },
+  });
 
-    fetchProfile();
-  }, []);
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const onSubmit = async (formData: ProfileFormData) => {
     setIsLoading(true);
+    try {
+      let avatarUrl = null;
 
-    let avatarUrl = null;
+      // Upload avatar if a file is selected
+      if (formData.avatarFile) {
+        const { error: uploadError } = await supabase.storage
+          .from("avatars")
+          .upload(`public/${formData.avatarFile.name}`, formData.avatarFile);
 
-    if (avatarFile) {
-      const { error } = await supabase.storage
-        .from("avatars")
-        .upload(`public/${avatarFile.name}`, avatarFile);
+        if (uploadError) throw uploadError;
 
-      if (error) {
-        console.error("Error uploading file:", error.message);
-        return;
+        const { data: publicUrlData } = supabase.storage
+          .from("avatars")
+          .getPublicUrl(`public/${formData.avatarFile.name}`);
+
+        avatarUrl = publicUrlData.publicUrl;
       }
 
-      const { data: publicUrlData } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(`public/${avatarFile.name}`);
+      // Update profile in the database
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({
+          avatar_url: avatarUrl,
+          city: formData.location?.city,
+          country: formData.location?.country,
+          latitude: formData.location?.latitude,
+          longitude: formData.location?.longitude,
+        })
+        .eq("id", session?.user?.id);
 
-      avatarUrl = publicUrlData.publicUrl;
-    }
+      if (updateError) throw updateError;
 
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({
-        avatar_url: avatarUrl,
-        city: location?.city,
-        country: location?.country,
-        latitude: location?.latitude,
-        longitude: location?.longitude,
-      })
-      .eq("id", session?.user?.id);
-
-    if (updateError) {
-      console.error("Error updating profile:", updateError.message);
-    } else {
-      console.log("Profile updated successfully!");
+      queryClient.invalidateQueries({
+        queryKey: ["profile", session?.user?.id],
+      });
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
 
     setIsLoading(false);
   };
+
+  if (profileIsLoading) {
+    return <ProfileSettingsSkeleton />;
+  }
 
   return (
     <>
@@ -101,34 +119,32 @@ function ProfileSettings() {
       >
         Profile Settings
       </h1>
-      <form className={styles.form} onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+        {/* Avatar Upload */}
         <div className={styles.field}>
-          <AvatarUploadField
-            initialAvatar={avatarUrl}
-            onFileSelect={setAvatarFile}
-          />
+          {session?.user?.id && (
+            <AvatarUploadField
+              initialAvatar={data?.avatar_url}
+              onFileSelect={(file) => setValue("avatarFile", file)}
+              userId={session?.user?.id}
+            />
+          )}
         </div>
-        <div className={styles.field}>
-          <Input
-            id="email"
-            label="Email"
-            name="email"
-            placeholder="example@email.com"
-            value={session?.user?.email}
-            disabled
-          />
-        </div>
+
+        {/* Location Select */}
         <div className={styles.field}>
           <LocationSelect
-            // initialLocation={location}
-            onChange={(item) => {
-              setLocation({
-                city: item.city,
-                country: item.country,
-                latitude: item.latitude,
-                longitude: item.longitude,
-              }); // Mettre à jour la localisation sélectionnée
-            }}
+            initialCity={
+              data
+                ? {
+                    city: data.city,
+                    country: data.country,
+                    latitude: data.latitude,
+                    longitude: data.longitude,
+                  }
+                : null
+            }
+            onChange={(location) => setValue("location", location)}
           />
         </div>
 

@@ -4,7 +4,11 @@ import { AuthError } from "@supabase/supabase-js";
 import { signInWithEmail, signOut, signUpWithEmail } from "../api/auth";
 
 export const useAuth = () => {
-  const { session, setSession } = useContext(AuthContext);
+  const {
+    session,
+    setSession,
+    loading: sessionIsLoading,
+  } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<AuthError | null>(null);
   async function login(credentials: { email: string; password: string }) {
@@ -53,6 +57,7 @@ export const useAuth = () => {
       });
   }
   return {
+    sessionIsLoading,
     session,
     login,
     logout,
