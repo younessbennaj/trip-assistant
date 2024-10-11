@@ -13,7 +13,7 @@ function AvatarUploadField({
 }: {
   initialAvatar: string | null;
   onFileSelect: (file: File | null) => void;
-  userId?: string;
+  userId: string;
 }) {
   const queryClient = useQueryClient();
   const [avatarPreview, setAvatarPreview] = useState<string | null>();

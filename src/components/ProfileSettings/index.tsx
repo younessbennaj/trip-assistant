@@ -1,25 +1,27 @@
-import { useState } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import AvatarUploadField from "../AvatarUploadField";
-import Input from "../Input";
 import LocationSelect from "../LocationSelect";
 import styles from "./ProfileSettings.module.css";
 import Button from "../Button";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { updateProfile, uploadAvatar } from "../../api/profile";
 import { supabase } from "../../api";
 import ProfileSettingsSkeleton from "./ProfileSettingsSkeleton";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
 
-function ProfileSettings() {
-  const queryClient = useQueryClient();
-  const { session } = useAuth();
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [location, setLocation] = useState<{
+interface ProfileFormData {
+  avatarFile: File | null;
+  location: {
     city: string;
     country: string;
     latitude: number;
     longitude: number;
-  } | null>(null);
+  } | null;
+}
+
+function ProfileSettings() {
+  const queryClient = useQueryClient();
+  const { session } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const { data, isLoading: profileIsLoading } = useQuery({
@@ -39,49 +41,69 @@ function ProfileSettings() {
     },
   });
 
-  const initialCity =
-    data?.city && data?.country && data?.latitude && data?.longitude
-      ? {
-          city: data.city,
-          country: data.country,
-          latitude: data.latitude,
-          longitude: data.longitude,
-        }
-      : null;
+  // Initialize form with React Hook Form
+  const {
+    // register,
+    setValue,
+    handleSubmit,
+    // watch,
+    // formState: { errors },
+  } = useForm<ProfileFormData>({
+    defaultValues: {
+      avatarFile: null,
+      location: data
+        ? {
+            city: data.city,
+            country: data.country,
+            latitude: data.latitude,
+            longitude: data.longitude,
+          }
+        : null,
+    },
+  });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const onSubmit = async (formData: ProfileFormData) => {
     setIsLoading(true);
-
     try {
-      if (!session?.user?.id) {
-        throw new Error("User ID is not available");
-      }
       let avatarUrl = null;
 
-      // Si l'utilisateur a sélectionné un fichier pour l'avatar, on l'upload
-      if (avatarFile) {
-        avatarUrl = await uploadAvatar(avatarFile); // Utilise la fonction utilitaire pour uploader l'image
+      // Upload avatar if a file is selected
+      if (formData.avatarFile) {
+        const { error: uploadError } = await supabase.storage
+          .from("avatars")
+          .upload(`public/${formData.avatarFile.name}`, formData.avatarFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage
+          .from("avatars")
+          .getPublicUrl(`public/${formData.avatarFile.name}`);
+
+        avatarUrl = publicUrlData.publicUrl;
       }
 
-      // Mise à jour du profil utilisateur avec l'avatar et la localisation
-      await updateProfile(session.user.id, avatarUrl, location);
+      // Update profile in the database
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({
+          avatar_url: avatarUrl,
+          city: formData.location?.city,
+          country: formData.location?.country,
+          latitude: formData.location?.latitude,
+          longitude: formData.location?.longitude,
+        })
+        .eq("id", session?.user?.id);
 
-      // Invalidation du cache pour rafraîchir les données du profil
+      if (updateError) throw updateError;
+
       queryClient.invalidateQueries({
         queryKey: ["profile", session?.user?.id],
       });
-
-      console.log("Profile updated successfully!");
     } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error updating profile:", error.message);
-      } else {
-        console.error("Unknown error:", error);
-      }
-    } finally {
-      setIsLoading(false);
+      console.error("Error updating profile:", error);
     }
+
+    setIsLoading(false);
   };
 
   if (profileIsLoading) {
@@ -97,38 +119,33 @@ function ProfileSettings() {
       >
         Profile Settings
       </h1>
-      <form className={styles.form} onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+        {/* Avatar Upload */}
         <div className={styles.field}>
-          <AvatarUploadField
-            initialAvatar={data?.avatar_url}
-            onFileSelect={setAvatarFile}
-            userId={session?.user?.id}
-          />
-        </div>
-        <div className={styles.field}>
-          <Input
-            id="email"
-            label="Email"
-            name="email"
-            placeholder="example@email.com"
-            value={session?.user?.email}
-            disabled
-          />
-        </div>
-        <div className={styles.field}>
-          {profileIsLoading ? null : (
-            <LocationSelect
-              initialCity={initialCity}
-              onChange={(item) => {
-                setLocation({
-                  city: item.city,
-                  country: item.country,
-                  latitude: item.latitude,
-                  longitude: item.longitude,
-                });
-              }}
+          {session?.user?.id && (
+            <AvatarUploadField
+              initialAvatar={data?.avatar_url}
+              onFileSelect={(file) => setValue("avatarFile", file)}
+              userId={session?.user?.id}
             />
           )}
+        </div>
+
+        {/* Location Select */}
+        <div className={styles.field}>
+          <LocationSelect
+            initialCity={
+              data
+                ? {
+                    city: data.city,
+                    country: data.country,
+                    latitude: data.latitude,
+                    longitude: data.longitude,
+                  }
+                : null
+            }
+            onChange={(location) => setValue("location", location)}
+          />
         </div>
 
         <Button disabled={isLoading} style={{ alignSelf: "end" }}>
