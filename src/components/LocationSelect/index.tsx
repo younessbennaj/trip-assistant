@@ -1,6 +1,6 @@
 import AsyncSelect from "react-select/async";
-import { City } from "../CityAutocomplete/types";
 import styles from "../Input/Input.module.css";
+import { City } from "./types";
 
 async function fetchCities(query: string): Promise<City[]> {
   return fetch(`/api/cities?search=${query}`).then((response) =>
