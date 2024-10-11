@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 import cities from "./data/cities.json";
-import { City } from "../components/CityAutocomplete/types";
+import { City } from "../components/LocationSelect/types";
 
 const getCities = {
   enabled: true,
