@@ -5,6 +5,7 @@ import { supabase } from "../../api";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../hooks/use-auth";
+import CreateNewPinboardModal from "../CreateNewPinboardModal";
 
 interface PinboardItemProps {
   city: string;
@@ -97,10 +98,14 @@ function PinboardCollection() {
   return (
     <main>
       <section aria-labelledby="pinboard-collection-heading">
-        <h1 id="pinboard-collection-heading">Your Pinboards</h1>
-        <p>
-          Manage and organize your upcoming trips to different destinations.
-        </p>
+        <div>
+          <h1 id="pinboard-collection-heading">Your Pinboards</h1>
+          <p>
+            Manage and organize your upcoming trips to different destinations.
+          </p>
+          {/* <Button>Create new board</Button> */}
+          <CreateNewPinboardModal />
+        </div>
 
         <div className={styles.PinboardCollection}>
           {pinboards
