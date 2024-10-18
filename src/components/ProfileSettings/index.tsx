@@ -24,6 +24,7 @@ function ProfileSettings() {
   const { session } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
+  // useUserProfile
   const { data, isLoading: profileIsLoading } = useQuery({
     enabled: !!session?.user?.id,
     queryKey: ["profile", session?.user?.id],
@@ -82,6 +83,8 @@ function ProfileSettings() {
         avatarUrl = publicUrlData.publicUrl;
       }
 
+      // use tan stack mutation
+      // hook: updateProfileMutation
       // Update profile in the database
       const { error: updateError } = await supabase
         .from("profiles")
