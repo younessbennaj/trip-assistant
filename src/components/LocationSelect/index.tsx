@@ -63,7 +63,7 @@ function LocationSelect({
     : null;
   return (
     <div className={styles.wrapper}>
-      <label htmlFor="location">Choose your currenty city:</label>
+      {/* <label htmlFor="location">Choose your currenty city:</label> */}
       <AsyncSelect
         id="location"
         cacheOptions

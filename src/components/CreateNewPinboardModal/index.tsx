@@ -46,7 +46,7 @@ function CreateNewPinboardModal() {
     <Modal
       title="Create New Pinboard"
       description="Enter the details of your new pinboard."
-      triggerLabel="Create new board"
+      triggerLabel="Add new board"
       isOpen={isOpen}
       setIsOpen={setIsOpen} // Pass down the state to open/close modal
     >

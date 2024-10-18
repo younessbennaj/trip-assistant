@@ -27,22 +27,21 @@ function PinboardItem({
   const formattedDates = `${dayjs(startDate).format("D MMM")} - ${dayjs(endDate).format("D MMM 'YY")}`;
   return (
     <Link to={link}>
-      <article className={styles.PinboardItem}>
+      <article className="shadow-lg rounded-lg overflow-hidden">
         <img
           src={imageUrl}
           alt={`${city} view`}
           style={{ width: "100%", height: "150px", objectFit: "cover" }}
         />
-        <div
-          style={{
-            padding: "1rem",
-          }}
-        >
+        <div className="p-4 flex flex-col gap-2">
           <header>
-            <h2>{city}</h2>
-            <p>Dates: {formattedDates}</p>
+            <h2 className="text-2xl font-bold">{city}</h2>
           </header>
-          <p>Duration: {duration}</p>
+          <div className="flex">
+            <p className="text-sm">{formattedDates}</p>
+            <span className="mx-2">•</span>
+            <p className="text-sm">{duration}</p>
+          </div>
         </div>
       </article>
     </Link>
@@ -98,12 +97,16 @@ function PinboardCollection() {
   return (
     <main>
       <section aria-labelledby="pinboard-collection-heading">
-        <div>
-          <h1 id="pinboard-collection-heading">Your Pinboards</h1>
-          <p>
-            Manage and organize your upcoming trips to different destinations.
-          </p>
-          {/* <Button>Create new board</Button> */}
+        <div className="flex items-center justify-start md:justify-between mb-10 flex-col md:flex-row">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-2xl" id="pinboard-collection-heading">
+              Your Pinboards
+            </h1>
+            <p className="text-sm">
+              Manage and organize your upcoming trips to different destinations.
+            </p>
+          </div>
+
           <CreateNewPinboardModal />
         </div>
 
