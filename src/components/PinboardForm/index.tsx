@@ -1,31 +1,18 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import dayjs from "dayjs";
 import Button from "../Button";
 import LocationSelect from "../LocationSelect";
+import { PinboardFormInputs, PinboardFormProps } from "./types";
 
-interface PinboardFormInputs {
-  city: string;
-  latitude: number;
-  longitude: number;
-  startDate: string;
-  endDate: string;
-}
-
-interface PinboardFormProps {
-  onSubmit: (data: PinboardFormInputs & { duration: number }) => void;
-}
-
-function PinboardForm({ onSubmit }: PinboardFormProps) {
+function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
   const {
     register,
     handleSubmit,
-    control, // Access control for Controller
+    control,
     formState: { errors },
   } = useForm<PinboardFormInputs>();
 
   const onSubmitHandler: SubmitHandler<PinboardFormInputs> = (data) => {
-    const duration = dayjs(data.endDate).diff(dayjs(data.startDate), "day");
-    onSubmit({ ...data, duration });
+    onSubmit({ ...data });
   };
 
   return (
@@ -84,7 +71,9 @@ function PinboardForm({ onSubmit }: PinboardFormProps) {
         )}
       </div>
       <div className="flex justify-end">
-        <Button type="submit">Create Pinboard</Button>
+        <Button disabled={isSubmitting} type="submit">
+          Create Pinboard
+        </Button>
       </div>
     </form>
   );

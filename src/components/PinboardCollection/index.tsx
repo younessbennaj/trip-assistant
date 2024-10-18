@@ -1,66 +1,9 @@
-import { Link } from "react-router-dom";
-
-import { supabase } from "../../api";
-import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../hooks/use-auth";
 import CreateNewPinboardModal from "../CreateNewPinboardModal";
 import SkeletonRectangle from "../SkeletonRectangle";
-
-interface PinboardItemProps {
-  city: string;
-  startDate: string;
-  endDate: string;
-  duration: string;
-  link: string;
-  imageUrl: string;
-}
-
-function PinboardItem({
-  city,
-  startDate,
-  endDate,
-  duration,
-  link,
-  imageUrl,
-}: PinboardItemProps) {
-  const formattedDates = `${dayjs(startDate).format("D MMM")} - ${dayjs(endDate).format("D MMM 'YY")}`;
-  return (
-    <Link to={link}>
-      <article className="shadow-lg rounded-lg overflow-hidden">
-        <img
-          src={imageUrl}
-          alt={`${city} view`}
-          style={{ width: "100%", height: "150px", objectFit: "cover" }}
-        />
-        <div className="p-4 flex flex-col gap-2">
-          <header>
-            <h2 className="text-2xl font-bold">{city}</h2>
-          </header>
-          <div className="flex">
-            <p className="text-sm">{formattedDates}</p>
-            <span className="mx-2">•</span>
-            <p className="text-sm">{duration}</p>
-          </div>
-        </div>
-      </article>
-    </Link>
-  );
-}
-
-const fetchPinboards = async (userId: string) => {
-  const { data, error } = await supabase
-    .from("pinboards")
-    .select("id, city, country, start_date, end_date, duration")
-    .eq("user_id", userId) // Fetch pinboards based on the user's ID
-    .order("start_date", { ascending: true });
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data;
-};
+import PinboardItem from "../PinboardItem";
+import { fetchPinboards } from "../../api/pinboard";
 
 function PinboardCollection() {
   const { userId } = useAuth();

@@ -1,56 +1,76 @@
-import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "../../api";
 import Modal from "../Modal";
 import PinboardForm from "../PinboardForm";
-import { supabase } from "../../api"; // Import Supabase client
+import React from "react";
+import { toast } from "sonner";
 import { useAuth } from "../../hooks/use-auth";
+import dayjs from "dayjs";
+import { PinboardFormInputs } from "../PinboardForm/types";
+import { Pinboard } from "../PinboardCollection/types";
 
 function CreateNewPinboardModal() {
-  const { session } = useAuth(); // Get the session from the AuthProvider
-  const [isOpen, setIsOpen] = useState(false); // Manage modal open state
+  const { session } = useAuth();
+  const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = React.useState(false);
 
-  const handleCreatePinboard = async (data: {
-    city: string;
-    latitude: number;
-    longitude: number;
-    startDate: string;
-    endDate: string;
-    duration: number;
-  }) => {
-    try {
-      const { error } = await supabase.from("pinboards").insert({
-        city: data.city,
-        latitude: data.latitude,
-        longitude: data.longitude,
-        start_date: data.startDate,
-        end_date: data.endDate,
-        duration: data.duration,
-        user_id: session?.user.id,
-      });
+  // Define the mutation
+  const { mutate, status, isError, error } = useMutation({
+    mutationFn: async (newPinboard: Pinboard) => {
+      // miss country information
+      const { data, error } = await supabase
+        .from("pinboards")
+        .insert([newPinboard])
+        .select("*"); // Returning the new pinboard
 
       if (error) {
-        throw error;
+        throw new Error(error.message);
       }
 
-      console.log("Pinboard created successfully!");
-      setIsOpen(false); // Close the modal on success
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Error creating pinboard:", error.message);
-      } else {
-        console.error("Unknown error:", error);
-      }
-    }
+      return data; // Return the newly created pinboard
+    },
+    onSuccess: (newPinboard) => {
+      // Update the cache for the pinboards query
+      queryClient.setQueryData(["pinboards"], (oldPinboards: Pinboard[]) => {
+        if (oldPinboards) {
+          return [...oldPinboards, ...newPinboard]; // Append the new pinboard
+        }
+        return [newPinboard]; // In case there were no pinboards previously
+      });
+      setIsOpen(false); // Close the modal
+      toast.success("Pinboard created successfully");
+    },
+    onError: (error) => {
+      console.error("Error creating pinboard:", error.message);
+    },
+  });
+
+  const handleCreatePinboard = (data: PinboardFormInputs) => {
+    const adaptedData = {
+      city: data.city,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      start_date: data.startDate, // Adapt startDate field
+      end_date: data.endDate, // Adapt endDate field
+      duration: dayjs(data.endDate).diff(dayjs(data.startDate), "day"), // Already the same
+      user_id: session?.user.id, // Set the user_id from the session
+    };
+    mutate(adaptedData); // Trigger the mutation
   };
 
   return (
     <Modal
       title="Create New Pinboard"
       description="Enter the details of your new pinboard."
-      triggerLabel="Add new board"
+      triggerLabel="Create new board"
       isOpen={isOpen}
-      setIsOpen={setIsOpen} // Pass down the state to open/close modal
+      setIsOpen={setIsOpen}
     >
-      <PinboardForm onSubmit={handleCreatePinboard} />
+      <PinboardForm
+        onSubmit={handleCreatePinboard}
+        isSubmitting={status === "pending"}
+      />
+      {isError && <p>Error: {error?.message}</p>}
     </Modal>
   );
 }
