@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import styles from "./PinboardCollection.module.css";
 
 import { supabase } from "../../api";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../hooks/use-auth";
 import CreateNewPinboardModal from "../CreateNewPinboardModal";
+import SkeletonRectangle from "../SkeletonRectangle";
 
 interface PinboardItemProps {
   city: string;
@@ -48,19 +48,6 @@ function PinboardItem({
   );
 }
 
-// interface Pinboard {
-//   id: string;
-//   city: string;
-//   country: string;
-//   latitude: number;
-//   longitude: number;
-//   start_date: string;
-//   end_date: string;
-//   duration: number;
-//   created_at: string;
-//   updated_at: string;
-// }
-
 const fetchPinboards = async (userId: string) => {
   const { data, error } = await supabase
     .from("pinboards")
@@ -87,10 +74,6 @@ function PinboardCollection() {
     queryFn: () => (userId ? fetchPinboards(userId) : null),
   });
 
-  if (isLoading) {
-    return <p>Loading pinboards...</p>;
-  }
-
   if (error) {
     return <p>Error fetching pinboards: {error.message}</p>;
   }
@@ -110,20 +93,28 @@ function PinboardCollection() {
           <CreateNewPinboardModal />
         </div>
 
-        <div className={styles.PinboardCollection}>
-          {pinboards
-            ? pinboards.map((pinboard) => (
-                <PinboardItem
-                  key={pinboard.id}
-                  city={pinboard.city}
-                  startDate={pinboard.start_date}
-                  endDate={pinboard.end_date}
-                  duration={`${pinboard.duration} days`}
-                  link={`/pinboards/${pinboard.id}`}
-                  imageUrl={`https://via.placeholder.com/400x300?text=${pinboard.city}`} // Placeholder for now
-                />
-              ))
-            : null}
+        <div className="flex flex-col gap-6">
+          {isLoading ? (
+            <>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <SkeletonRectangle key={index} height="246px" width="720px" />
+              ))}
+            </>
+          ) : pinboards ? (
+            pinboards.map((pinboard) => (
+              <PinboardItem
+                key={pinboard.id}
+                city={pinboard.city}
+                startDate={pinboard.start_date}
+                endDate={pinboard.end_date}
+                duration={`${pinboard.duration} days`}
+                link={`/pinboards/${pinboard.id}`}
+                imageUrl={`https://via.placeholder.com/400x300?text=${pinboard.city}`} // Placeholder for now
+              />
+            ))
+          ) : (
+            <p>You don't have any pinboards yet. </p>
+          )}
         </div>
       </section>
     </main>
