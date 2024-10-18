@@ -12,6 +12,7 @@ import MainLayout from "./components/MainLayout/index.tsx";
 import ProfileSettings from "./components/ProfileSettings/index.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "sonner";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ enableMocking().then(() => {
       <AuthProvider>
         <RouterProvider router={router} />
       </AuthProvider>
+      <Toaster />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>,
     // </StrictMode>,
