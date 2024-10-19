@@ -1,7 +1,8 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Button from "../Button";
-import LocationSelect from "../LocationSelect";
+// import LocationSelect from "../LocationSelect";
 import { PinboardFormInputs, PinboardFormProps } from "./types";
+import DestinationCombobox from "../DestinationCombobox";
 
 function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
   const {
@@ -18,19 +19,14 @@ function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          City
-        </label>
         <Controller
           name="city"
           control={control}
-          rules={{ required: "City is required" }}
+          // rules={{ required: "city is required" }}
           render={({ field }) => (
-            <LocationSelect
-              onChange={(item) => {
-                field.onChange(item.city); // Pass city name to the form
-                field.onBlur();
-              }}
+            <DestinationCombobox
+              value={field.value}
+              onSelect={field.onChange}
             />
           )}
         />

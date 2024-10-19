@@ -1,13 +1,12 @@
 import { useAuth } from "../../hooks/use-auth";
 import AvatarUploadField from "../AvatarUploadField";
-import LocationSelect from "../LocationSelect";
-import styles from "./ProfileSettings.module.css";
 import Button from "../Button";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../api";
 import ProfileSettingsSkeleton from "./ProfileSettingsSkeleton";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
+import DestinationCombobox from "../DestinationCombobox";
 
 interface ProfileFormData {
   avatarFile: File | null;
@@ -44,27 +43,28 @@ function ProfileSettings() {
 
   // Initialize form with React Hook Form
   const {
-    // register,
-    setValue,
+    control,
     handleSubmit,
-    // watch,
-    // formState: { errors },
+    formState: { isDirty },
   } = useForm<ProfileFormData>({
     defaultValues: {
       avatarFile: null,
-      location: data
-        ? {
-            city: data.city,
-            country: data.country,
-            latitude: data.latitude,
-            longitude: data.longitude,
-          }
-        : null,
+      location: null,
+    },
+    values: {
+      avatarFile: null,
+      location: {
+        city: data?.city,
+        country: data?.country,
+        latitude: data?.latitude,
+        longitude: data?.longitude,
+      },
     },
   });
 
   const onSubmit = async (formData: ProfileFormData) => {
     setIsLoading(true);
+
     try {
       let avatarUrl = null;
 
@@ -122,36 +122,43 @@ function ProfileSettings() {
       >
         Profile Settings
       </h1>
-      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-        {/* Avatar Upload */}
-        <div className={styles.field}>
-          {session?.user?.id && (
-            <AvatarUploadField
-              initialAvatar={data?.avatar_url}
-              onFileSelect={(file) => setValue("avatarFile", file)}
-              userId={session?.user?.id}
-            />
-          )}
-        </div>
-
-        {/* Location Select */}
-        <div className={styles.field}>
-          <LocationSelect
-            initialCity={
-              data
-                ? {
-                    city: data.city,
-                    country: data.country,
-                    latitude: data.latitude,
-                    longitude: data.longitude,
-                  }
-                : null
-            }
-            onChange={(location) => setValue("location", location)}
+      <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
+        {session?.user?.id && (
+          <Controller
+            name="avatarFile"
+            control={control}
+            render={({ field }) => (
+              <AvatarUploadField
+                initialAvatar={data?.avatar_url}
+                onFileSelect={field.onChange}
+                userId={session?.user?.id}
+              />
+            )}
           />
-        </div>
+        )}
+        {data ? (
+          <Controller
+            defaultValue={{
+              city: data.city,
+              country: data.country,
+              latitude: data.latitude,
+              longitude: data.longitude,
+            }}
+            rules={{
+              required: true,
+            }}
+            name="location"
+            control={control}
+            render={({ field }) => (
+              <DestinationCombobox
+                value={field.value}
+                onSelect={field.onChange}
+              />
+            )}
+          />
+        ) : null}
 
-        <Button disabled={isLoading} style={{ alignSelf: "end" }}>
+        <Button className="mt-5 self-end" disabled={isLoading || !isDirty}>
           Save
         </Button>
       </form>

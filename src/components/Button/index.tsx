@@ -1,5 +1,6 @@
 import { ComponentPropsWithRef } from "react";
 import styles from "./Button.module.css";
+import clsx from "clsx";
 
 type ButtonProps = ComponentPropsWithRef<"button"> & {
   children: string;
@@ -7,7 +8,7 @@ type ButtonProps = ComponentPropsWithRef<"button"> & {
 
 function Button({ children, ...props }: ButtonProps) {
   return (
-    <button {...props} className={styles.button}>
+    <button {...props} className={clsx(styles.button, props.className)}>
       {children}
     </button>
   );
