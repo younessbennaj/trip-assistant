@@ -4,7 +4,7 @@ import Button from "../Button";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../api";
 import ProfileSettingsSkeleton from "./ProfileSettingsSkeleton";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import DestinationCombobox from "../DestinationCombobox";
 
@@ -42,22 +42,29 @@ function ProfileSettings() {
   });
 
   // Initialize form with React Hook Form
-  const { setValue, handleSubmit } = useForm<ProfileFormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty },
+  } = useForm<ProfileFormData>({
     defaultValues: {
       avatarFile: null,
-      location: data
-        ? {
-            city: data.city,
-            country: data.country,
-            latitude: data.latitude,
-            longitude: data.longitude,
-          }
-        : null,
+      location: null,
+    },
+    values: {
+      avatarFile: null,
+      location: {
+        city: data?.city,
+        country: data?.country,
+        latitude: data?.latitude,
+        longitude: data?.longitude,
+      },
     },
   });
 
   const onSubmit = async (formData: ProfileFormData) => {
     setIsLoading(true);
+
     try {
       let avatarUrl = null;
 
@@ -117,16 +124,41 @@ function ProfileSettings() {
       </h1>
       <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
         {session?.user?.id && (
-          <AvatarUploadField
-            initialAvatar={data?.avatar_url}
-            onFileSelect={(file) => setValue("avatarFile", file)}
-            userId={session?.user?.id}
+          <Controller
+            name="avatarFile"
+            control={control}
+            render={({ field }) => (
+              <AvatarUploadField
+                initialAvatar={data?.avatar_url}
+                onFileSelect={field.onChange}
+                userId={session?.user?.id}
+              />
+            )}
           />
         )}
+        {data ? (
+          <Controller
+            defaultValue={{
+              city: data.city,
+              country: data.country,
+              latitude: data.latitude,
+              longitude: data.longitude,
+            }}
+            rules={{
+              required: true,
+            }}
+            name="location"
+            control={control}
+            render={({ field }) => (
+              <DestinationCombobox
+                value={field.value}
+                onSelect={field.onChange}
+              />
+            )}
+          />
+        ) : null}
 
-        <DestinationCombobox />
-
-        <Button className="mt-5 self-end" disabled={isLoading}>
+        <Button className="mt-5 self-end" disabled={isLoading || !isDirty}>
           Save
         </Button>
       </form>

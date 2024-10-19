@@ -17,8 +17,15 @@ async function fetchCities(query: string): Promise<City[]> {
   return await response.json();
 }
 
-export default function DestinationCombobox() {
-  const [selected, setSelected] = useState<City | null>(null);
+export default function DestinationCombobox({
+  value,
+  onSelect,
+}: {
+  value: City | null; // Accept optional initial city
+  onSelect: (city: City) => void;
+}) {
+  console.log(value);
+  // const [selected, setSelected] = useState<City | null>(null);
   const [cities, setCities] = useState<City[]>([]); // Store fetched cities
 
   // Debounce the API call to avoid sending too many requests
@@ -46,8 +53,12 @@ export default function DestinationCombobox() {
         Destination
       </Label>
       <Combobox
-        value={selected}
-        onChange={(value) => setSelected(value)}
+        value={value}
+        onChange={(selectedCity) => {
+          if (selectedCity) {
+            onSelect(selectedCity); // Notify parent of the selection
+          }
+        }}
         onClose={() => setCities([])}
         __demoMode
       >
