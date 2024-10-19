@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../hooks/use-auth";
-import CreateNewPinboardModal from "../CreateNewPinboardModal";
 import SkeletonRectangle from "../SkeletonRectangle";
 import PinboardItem from "../PinboardItem";
 import { fetchPinboards } from "../../api/pinboard";
+import NewModal from "../NewModal";
 
 function PinboardCollection() {
   const { userId } = useAuth();
@@ -20,6 +20,7 @@ function PinboardCollection() {
   if (error) {
     return <p>Error fetching pinboards: {error.message}</p>;
   }
+
   return (
     <main>
       <section aria-labelledby="pinboard-collection-heading">
@@ -32,8 +33,7 @@ function PinboardCollection() {
               Manage and organize your upcoming trips to different destinations.
             </p>
           </div>
-
-          <CreateNewPinboardModal />
+          <NewModal />
         </div>
 
         <div className="flex flex-col gap-6">

@@ -24,10 +24,10 @@ export default function DestinationCombobox({
   value: City | null; // Accept optional initial city
   onSelect: (city: City) => void;
 }) {
-  console.log(value);
   // const [selected, setSelected] = useState<City | null>(null);
   const [cities, setCities] = useState<City[]>([]); // Store fetched cities
 
+  console.log(cities);
   // Debounce the API call to avoid sending too many requests
   const fetchDebouncedCities = useMemo(() => {
     return debounce(async (query: string) => {
@@ -44,6 +44,7 @@ export default function DestinationCombobox({
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const query = event.target.value;
+    console.log(query);
     fetchDebouncedCities(query);
   };
 
@@ -55,12 +56,13 @@ export default function DestinationCombobox({
       <Combobox
         value={value}
         onChange={(selectedCity) => {
+          console.log("select", selectedCity);
           if (selectedCity) {
+            console.log(selectedCity);
             onSelect(selectedCity); // Notify parent of the selection
           }
         }}
         onClose={() => setCities([])}
-        __demoMode
       >
         <div className="relative w-full">
           <ComboboxInput

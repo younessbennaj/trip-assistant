@@ -1,7 +1,10 @@
 export interface PinboardFormInputs {
-  city: string;
-  latitude: number;
-  longitude: number;
+  city: {
+    city: string;
+    country: string;
+    latitude: number;
+    longitude: number;
+  };
   startDate: string;
   endDate: string;
 }
