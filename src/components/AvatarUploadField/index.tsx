@@ -106,7 +106,6 @@ function AvatarUploadField({
           <UploadCloud size={20} />
           <span>Upload Profile Image</span>
         </button>
-
         <button
           disabled={!initialAvatar}
           className={`${styles.Button} ${styles.DeleteButton}`}
