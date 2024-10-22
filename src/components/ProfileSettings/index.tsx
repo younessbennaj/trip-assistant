@@ -6,16 +6,16 @@ import { supabase } from "../../api";
 import ProfileSettingsSkeleton from "./ProfileSettingsSkeleton";
 import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
-import DestinationCombobox from "../DestinationCombobox";
+// import DestinationCombobox from "../DestinationCombobox";
 
 interface ProfileFormData {
   avatarFile: File | null;
-  location: {
-    city: string;
-    country: string;
-    latitude: number;
-    longitude: number;
-  } | null;
+  // location: {
+  //   city: string;
+  //   country: string;
+  //   latitude: number;
+  //   longitude: number;
+  // } | null;
 }
 
 function ProfileSettings() {
@@ -30,7 +30,7 @@ function ProfileSettings() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("avatar_url, city, country, latitude, longitude")
+        .select("avatar_url, location")
         .eq("id", session?.user?.id)
         .single();
 
@@ -49,16 +49,10 @@ function ProfileSettings() {
   } = useForm<ProfileFormData>({
     defaultValues: {
       avatarFile: null,
-      location: null,
     },
     values: {
       avatarFile: null,
-      location: {
-        city: data?.city,
-        country: data?.country,
-        latitude: data?.latitude,
-        longitude: data?.longitude,
-      },
+      // here add location data from query, default value work only sync
     },
   });
 
@@ -90,10 +84,10 @@ function ProfileSettings() {
         .from("profiles")
         .update({
           avatar_url: avatarUrl,
-          city: formData.location?.city,
-          country: formData.location?.country,
-          latitude: formData.location?.latitude,
-          longitude: formData.location?.longitude,
+          // city: formData.location?.city,
+          // country: formData.location?.country,
+          // latitude: formData.location?.latitude,
+          // longitude: formData.location?.longitude,
         })
         .eq("id", session?.user?.id);
 
@@ -136,7 +130,7 @@ function ProfileSettings() {
             )}
           />
         )}
-        {data ? (
+        {/* {data ? (
           <Controller
             defaultValue={{
               city: data.city,
@@ -156,7 +150,7 @@ function ProfileSettings() {
               />
             )}
           />
-        ) : null}
+        ) : null} */}
 
         <Button className="mt-5 self-end" disabled={isLoading || !isDirty}>
           Save

@@ -7,6 +7,7 @@ export interface PinboardFormInputs {
   };
   startDate: string;
   endDate: string;
+  pinboardName?: string;
 }
 
 export interface PinboardFormProps {
