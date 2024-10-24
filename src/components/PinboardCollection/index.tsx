@@ -43,16 +43,16 @@ function PinboardCollection() {
                 <SkeletonRectangle key={index} height="246px" width="720px" />
               ))}
             </>
-          ) : pinboards ? (
+          ) : pinboards && pinboards.length > 0 ? (
             pinboards.map((pinboard) => (
               <PinboardItem
                 key={pinboard.id}
-                city={pinboard.city}
+                city={pinboard.location_name}
                 startDate={pinboard.start_date}
                 endDate={pinboard.end_date}
                 duration={`${pinboard.duration} days`}
                 link={`/pinboards/${pinboard.id}`}
-                imageUrl={`https://via.placeholder.com/400x300?text=${pinboard.city}`} // Placeholder for now
+                imageUrl={`https://via.placeholder.com/400x300?text=${pinboard.location_name}`} // Placeholder for now
               />
             ))
           ) : (

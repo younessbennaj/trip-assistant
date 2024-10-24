@@ -10,7 +10,13 @@ function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<PinboardFormInputs>();
+  } = useForm<PinboardFormInputs>({
+    defaultValues: {
+      city: {
+        city: "",
+      },
+    },
+  });
 
   const onSubmitHandler: SubmitHandler<PinboardFormInputs> = (data) => {
     onSubmit({ ...data });
