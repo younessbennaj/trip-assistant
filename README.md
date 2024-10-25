@@ -41,11 +41,12 @@ Trip Assistant is a travel companion app designed to help travelers access essen
    yarn
    ```
 
-4. Set up environment variables for Supabase (create a .env.local file at the root):
+4. Set up environment variables for Supabase and Google Maps API (create a .env.local file at the root):
 
    ```env.local
    VITE_SUPABASE_PROJECT_ID=your-supabase-project-id
    VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
    ```
 
 5. **Configure Google Maps API Key**: If using Google Maps, make sure to configure the API key and add the custom domain in your `/etc/hosts` file.
