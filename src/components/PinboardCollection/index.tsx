@@ -51,7 +51,7 @@ function PinboardCollection() {
                 startDate={pinboard.start_date}
                 endDate={pinboard.end_date}
                 duration={`${pinboard.duration} days`}
-                link={`/pinboards/${pinboard.id}`}
+                link={`/pinboard/${pinboard.id}`}
                 imageUrl={`https://via.placeholder.com/400x300?text=${pinboard.location_name}`} // Placeholder for now
               />
             ))

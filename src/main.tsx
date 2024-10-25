@@ -13,6 +13,10 @@ import ProfileSettings from "./components/ProfileSettings/index.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "sonner";
+import { StrictMode } from "react";
+import PinboardDetails, {
+  loader as pinboardDetailsLoader,
+} from "./components/PinboardDetails/index.tsx";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +27,11 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <App />,
+      },
+      {
+        path: "/pinboard/:id",
+        element: <PinboardDetails />,
+        loader: pinboardDetailsLoader,
       },
       {
         path: "/profile",
@@ -63,14 +72,15 @@ async function enableMocking() {
 
 enableMocking().then(() => {
   createRoot(document.getElementById("root")!).render(
-    // <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
-      <Toaster />
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>,
-    // </StrictMode>,
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+        <Toaster />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+      , //{" "}
+    </StrictMode>,
   );
 });
