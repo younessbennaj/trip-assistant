@@ -1,10 +1,5 @@
 export interface PinboardFormInputs {
-  city: {
-    city: string;
-    country: string;
-    latitude: number;
-    longitude: number;
-  };
+  place: google.maps.places.AutocompletePrediction | null;
   startDate: string;
   endDate: string;
   pinboardName?: string;
