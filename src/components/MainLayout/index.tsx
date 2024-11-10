@@ -87,7 +87,7 @@ function MainLayout() {
             <li className="grow flex items-center justify-center">
               <Link
                 className="p-2 w-full flex items-center justify-center"
-                to="/"
+                to="/profile"
               >
                 <UserCircleIcon className="h-6 w-6" />
               </Link>
@@ -95,7 +95,7 @@ function MainLayout() {
             <li className="grow flex items-center justify-center">
               <Link
                 className="p-2 w-full flex items-center justify-center"
-                to="/"
+                to="/logout"
               >
                 <ArrowRightEndOnRectangleIcon className="h-6 w-6" />
               </Link>
