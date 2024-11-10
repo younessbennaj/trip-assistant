@@ -8,64 +8,84 @@ import {
 } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
-import { useMemo, useState } from "react";
-import { City } from "../LocationSelect/types";
-import debounce from "lodash/debounce";
-
-async function fetchCities(query: string): Promise<City[]> {
-  const response = await fetch(`/api/cities?search=${query}`);
-  return await response.json();
-}
+import { useState } from "react";
+import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import { useQuery } from "@tanstack/react-query";
 
 export default function DestinationCombobox({
+  label,
   value,
   onSelect,
+  size,
 }: {
-  value: City | null; // Accept optional initial city
-  onSelect: (city: City) => void;
+  label?: string;
+  value: google.maps.places.AutocompletePrediction | null;
+  onSelect: (place: google.maps.places.AutocompletePrediction) => void;
+  size?: "sm" | "md" | "lg";
 }) {
-  const [cities, setCities] = useState<City[]>([]); // Store fetched cities
+  const places = useMapsLibrary("places");
+  const [query, setQuery] = useState("");
 
-  // Debounce the API call to avoid sending too many requests
-  const fetchDebouncedCities = useMemo(() => {
-    return debounce(async (query: string) => {
-      if (query !== "") {
-        const data = await fetchCities(query);
-        setCities(data);
+  const { data: suggestions } = useQuery({
+    enabled: !!query && query.length > 3,
+    queryKey: ["suggestions", query],
+    queryFn: async () => {
+      if (places) {
+        const autocompleteService = new places.AutocompleteService();
+        return new Promise<google.maps.places.AutocompletePrediction[]>(
+          (resolve, reject) => {
+            autocompleteService.getPlacePredictions(
+              { input: query },
+              (predictions, status) => {
+                if (
+                  status === google.maps.places.PlacesServiceStatus.OK &&
+                  predictions
+                ) {
+                  resolve(predictions);
+                } else {
+                  reject(new Error("Failed to fetch suggestions"));
+                }
+              },
+            );
+          },
+        );
       } else {
-        setCities([]);
+        return [];
       }
-    }, 300);
-  }, []);
+    },
+    staleTime: 24 * 60 * 60 * 1000,
+    gcTime: 25 * 60 * 60 * 1000,
+  });
 
   const handleCityChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const query = event.target.value;
-    fetchDebouncedCities(query);
+    setQuery(event.target.value);
   };
 
   return (
     <Field className="w-full">
-      <Label className="text-sm text-gray-700 text-bold mb-1">
-        Destination
-      </Label>
+      {label ? (
+        <Label className="text-sm text-gray-700 text-bold mb-1">{label}</Label>
+      ) : null}
       <Combobox
         value={value}
-        onChange={(selectedCity) => {
-          if (selectedCity) {
-            onSelect(selectedCity); // Notify parent of the selection
+        onChange={(suggestion) => {
+          if (suggestion) {
+            onSelect(suggestion);
           }
         }}
-        onClose={() => setCities([])}
       >
         <div className="relative w-full">
           <ComboboxInput
             className={clsx(
               "py-1.5 pr-8 pl-3 text-sm/6 border border-gray-200 rounded-lg w-full",
               "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25",
+              size === "lg" && "py-3 pr-10 pl-6 text-lg/6",
             )}
-            displayValue={(city: City) => city?.city}
+            displayValue={(
+              suggestion: google.maps.places.AutocompletePrediction,
+            ) => suggestion?.description}
             onChange={handleCityChange}
           />
         </div>
@@ -78,16 +98,20 @@ export default function DestinationCombobox({
             "transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0",
           )}
         >
-          {cities.map((city) => (
-            <ComboboxOption
-              key={city.city}
-              value={city}
-              className="group flex cursor-default items-center gap-2 rounded-lg py-1.5 px-3 select-none data-[focus]:bg-gray-100 hover:bg-gray-100 hover:cursor-pointer"
-            >
-              <CheckIcon className="invisible size-4 fill-white group-data-[selected]:visible" />
-              <div className="text-sm/6 text-gray-800">{city.city}</div>
-            </ComboboxOption>
-          ))}
+          {suggestions
+            ? suggestions.map((suggestion) => (
+                <ComboboxOption
+                  key={suggestion.place_id}
+                  value={suggestion}
+                  className="group flex cursor-default items-center gap-2 rounded-lg py-1.5 px-3 select-none data-[focus]:bg-gray-100 hover:bg-gray-100 hover:cursor-pointer"
+                >
+                  <CheckIcon className="invisible size-4 fill-white group-data-[selected]:visible" />
+                  <div className="text-sm/6 text-gray-800">
+                    {suggestion.description}
+                  </div>
+                </ComboboxOption>
+              ))
+            : null}
         </ComboboxOptions>
       </Combobox>
     </Field>

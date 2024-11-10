@@ -1,9 +1,9 @@
 import { Params, useLoaderData } from "react-router-dom";
-import { Map } from "@vis.gl/react-google-maps";
 import { useQuery } from "@tanstack/react-query";
-import { fetchPinboardById } from "../../api/pinboard"; // Assure-toi que le chemin est correct
+import { fetchPinboardById } from "../../api/pinboard";
+import DestinationCombobox from "../DestinationCombobox";
+import { useState } from "react";
 
-// Loader pour récupérer l'id du pinboard
 export async function loader({ params }: { params: Params<"id"> }) {
   return {
     pinboardId: params.id,
@@ -11,10 +11,10 @@ export async function loader({ params }: { params: Params<"id"> }) {
 }
 
 function PinboardDetails() {
-  // Récupération de l'id du pinboard depuis le loader
+  const [place, setPlace] =
+    useState<google.maps.places.AutocompletePrediction | null>(null);
   const { pinboardId } = useLoaderData() as { pinboardId: string };
 
-  // Utilisation de TanStack Query pour récupérer les données du pinboard avec la dernière syntaxe
   const {
     data: pinboardData,
     isLoading,
@@ -22,7 +22,7 @@ function PinboardDetails() {
   } = useQuery({
     queryKey: ["pinboardData", pinboardId],
     queryFn: () => fetchPinboardById(pinboardId),
-    enabled: !!pinboardId, // N'exécute la requête que si `pinboardId` est défini
+    enabled: !!pinboardId,
   });
 
   if (isLoading) {
@@ -34,11 +34,26 @@ function PinboardDetails() {
   }
 
   return (
-    <div>
-      <h2>Pinboard name: {pinboardData.pinboard_name}</h2>
-      <p>Pinboard location: {pinboardData.location_name}</p>
+    <div className="h-full">
+      <div className="text-center mt-[200px] max-w-[50%] m-auto">
+        <h2 className="text-4xl mb-4">Search for a place</h2>
+        <p className="mb-6">
+          Ready to explore <b>{pinboardData.location_name}</b>? Add a spot to
+          your travel list.
+        </p>
+
+        <DestinationCombobox
+          size="lg"
+          value={place}
+          onSelect={(place) => {
+            setPlace(place);
+          }}
+        />
+      </div>
+
+      {/* <div className="grow bg-blue-100 h-full">Map Placeholder</div> */}
       {/* Exemple d'affichage */}
-      <Map
+      {/* <Map
         style={{ width: "100%", height: "400px" }}
         defaultCenter={{
           lat: pinboardData.latitude,
@@ -47,7 +62,7 @@ function PinboardDetails() {
         defaultZoom={13}
         gestureHandling={"greedy"}
         disableDefaultUI={true}
-      />
+      /> */}
     </div>
   );
 }

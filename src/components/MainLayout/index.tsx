@@ -30,7 +30,7 @@ function MainLayout() {
           </ul>
         </nav>
       </header>
-      <main className={styles.main}>
+      <main>
         <Outlet />
       </main>
     </>
