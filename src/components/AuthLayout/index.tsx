@@ -12,7 +12,7 @@ function AuthLayout() {
   return (
     <div className={styles.layout}>
       <div className="columns">
-        <aside className={styles.sidebar}>
+        <aside className="hidden lg:block px-6 py-10">
           <h4
             style={{
               marginBottom: "12px",
