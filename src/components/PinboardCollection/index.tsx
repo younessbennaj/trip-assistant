@@ -22,7 +22,7 @@ function PinboardCollection() {
   }
 
   return (
-    <main className="max-w-[980px] mx-auto px-4 mt-[50px]">
+    <main className="max-w-[980px] mx-auto mt-[50px]">
       <section aria-labelledby="pinboard-collection-heading">
         <div className="flex md:items-center justify-start md:justify-between mb-10 flex-col md:flex-row">
           <div className="flex flex-col gap-1 mb-6 md:mb-0">
@@ -36,7 +36,7 @@ function PinboardCollection() {
           <NewModal />
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-8">
           {isLoading ? (
             <>
               {Array.from({ length: 3 }).map((_, index) => (

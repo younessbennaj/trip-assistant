@@ -21,20 +21,21 @@ function PinboardItem({
   const formattedDates = `${dayjs(startDate).format("D MMM")} - ${dayjs(endDate).format("D MMM 'YY")}`;
   return (
     <Link to={link}>
-      <article className="shadow-lg rounded-lg overflow-hidden">
+      <article className="shadow-xl rounded-xl overflow-hidden flex flex-col md:flex-row border-t border-gray-100">
         <img
+          className="h-[170px] md:h-[300px] md:order-last block"
           src={imageUrl}
           alt={`${city} view`}
-          style={{ width: "100%", height: "150px", objectFit: "cover" }}
+          style={{ objectFit: "cover" }}
         />
-        <div className="p-4 flex flex-col gap-2">
+        <div className="py-4 px-6 md:py-6 md:px-8 flex flex-col gap-2 grow">
           <header>
-            <h2 className="text-2xl font-bold">{city}</h2>
+            <h4 className="text-3xl md:text-3xl text-gray-700">{city}</h4>
           </header>
           <div className="flex">
-            <p className="text-sm">{formattedDates}</p>
+            <p className="text-sm md:text-base">{formattedDates}</p>
             <span className="mx-2">•</span>
-            <p className="text-sm">{duration}</p>
+            <p className="text-sm md:text-base">{duration}</p>
           </div>
         </div>
       </article>
