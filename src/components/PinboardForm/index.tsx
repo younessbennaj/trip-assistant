@@ -12,9 +12,7 @@ function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
     formState: { errors },
   } = useForm<PinboardFormInputs>({
     defaultValues: {
-      city: {
-        city: "",
-      },
+      place: null,
     },
   });
 
@@ -26,7 +24,7 @@ function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
     <form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-4">
       <div>
         <Controller
-          name="city"
+          name="place"
           control={control}
           // rules={{ required: "city is required" }}
           render={({ field }) => (
@@ -36,8 +34,8 @@ function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
             />
           )}
         />
-        {errors.city && (
-          <span className="text-red-500">{errors.city.message}</span>
+        {errors.place && (
+          <span className="text-red-500">{errors.place.message}</span>
         )}
       </div>
       <div>

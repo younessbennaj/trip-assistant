@@ -8,6 +8,7 @@ import {
 import PinboardForm from "../PinboardForm";
 import Button from "../Button";
 import dayjs from "dayjs";
+import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import { PinboardFormInputs } from "../PinboardForm/types";
 import { useAuth } from "../../hooks/use-auth";
 import { useState } from "react";
@@ -30,33 +31,32 @@ function NewModal() {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Define the mutation
+  const places = useMapsLibrary("places");
+
   const { mutate, status } = useMutation({
     mutationFn: async (newPinboardData: PinboardSubmitData) => {
-      // miss country information
       const { data, error } = await supabase
         .from("pinboards")
         .insert([newPinboardData])
-        .select("*"); // Returning the new pinboard
+        .select("*");
 
       if (error) {
         throw new Error(error.message);
       }
 
-      return data; // Return the newly created pinboard
+      return data;
     },
     onSuccess: (newPinboard) => {
-      // Update the cache for the pinboards query
       queryClient.setQueryData(
         ["pinboards", session?.user.id],
         (oldPinboards: Pinboard[]) => {
           if (oldPinboards) {
-            return [...oldPinboards, ...newPinboard]; // Append the new pinboard
+            return [...oldPinboards, ...newPinboard];
           }
-          return [newPinboard]; // In case there were no pinboards previously
+          return [newPinboard];
         },
       );
-      setIsOpen(false); // Close the modal
+      setIsOpen(false);
       toast.success("Pinboard created successfully");
     },
     onError: (error) => {
@@ -64,18 +64,51 @@ function NewModal() {
     },
   });
 
-  const handleCreatePinboard = (data: PinboardFormInputs) => {
-    const adaptedData = {
-      pinboard_name: data.pinboardName || data.city.city, // Default to city name if no custom name
-      location_name: data.city.city, // Name of the city
-      location: `POINT(${data.city.longitude} ${data.city.latitude})`, // Format as 'POINT(longitude latitude)'
-      start_date: data.startDate, // Adapt startDate field
-      end_date: data.endDate, // Adapt endDate field
-      duration: dayjs(data.endDate).diff(dayjs(data.startDate), "day"), // Calculate duration
-      user_id: session?.user.id, // Set the user_id from the session
-    };
+  const getPlaceDetails = (placeId: string) => {
+    return new Promise<google.maps.places.PlaceResult>((resolve, reject) => {
+      if (!places) {
+        reject(new Error("La bibliothèque Places n'est pas chargée."));
+        return;
+      }
 
-    mutate(adaptedData); // Trigger the mutation
+      const service = new places.PlacesService(document.createElement("div"));
+      service.getDetails({ placeId }, (result, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          if (result) {
+            resolve(result);
+          }
+        } else {
+          reject(
+            new Error(
+              `Erreur lors de la récupération des détails du lieu : ${status}`,
+            ),
+          );
+        }
+      });
+    });
+  };
+
+  const handleCreatePinboard = (data: PinboardFormInputs) => {
+    if (data.place) {
+      getPlaceDetails(data.place.place_id).then((placeDetails) => {
+        if (
+          placeDetails &&
+          placeDetails.geometry &&
+          placeDetails.geometry.location
+        ) {
+          const adaptedData = {
+            pinboard_name: placeDetails.name || data.pinboardName || "",
+            location_name: placeDetails.name ? placeDetails.name : "",
+            location: `POINT(${placeDetails.geometry.location.lng()} ${placeDetails.geometry.location.lat()})`,
+            start_date: data.startDate,
+            end_date: data.endDate,
+            duration: dayjs(data.endDate).diff(dayjs(data.startDate), "day"),
+            user_id: session?.user.id,
+          };
+          mutate(adaptedData);
+        }
+      });
+    }
   };
 
   return (
