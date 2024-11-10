@@ -35,7 +35,7 @@ function PinboardDetails() {
 
   return (
     <div className="h-full">
-      <div className="text-center mt-[200px] max-w-[50%] m-auto">
+      <div className="text-center mt-[200px] px-6 w-full md:max-w-[70%] lg:max-w-[50%] m-auto">
         <h2 className="text-4xl mb-4">Search for a place</h2>
         <p className="mb-6">
           Ready to explore <b>{pinboardData.location_name}</b>? Add a spot to

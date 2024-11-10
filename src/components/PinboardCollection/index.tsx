@@ -22,10 +22,10 @@ function PinboardCollection() {
   }
 
   return (
-    <main>
+    <main className="max-w-[980px] mx-auto px-4 mt-[50px]">
       <section aria-labelledby="pinboard-collection-heading">
-        <div className="flex items-center justify-start md:justify-between mb-10 flex-col md:flex-row">
-          <div className="flex flex-col gap-1">
+        <div className="flex md:items-center justify-start md:justify-between mb-10 flex-col md:flex-row">
+          <div className="flex flex-col gap-1 mb-6 md:mb-0">
             <h1 className="text-2xl" id="pinboard-collection-heading">
               Your Pinboards
             </h1>

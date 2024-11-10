@@ -30,7 +30,7 @@ function ProfileSettings() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("avatar_url, location")
+        .select("avatar_url, location, first_name")
         .eq("id", session?.user?.id)
         .single();
 
@@ -108,14 +108,10 @@ function ProfileSettings() {
   }
 
   return (
-    <>
-      <h1
-        style={{
-          marginBottom: "1rem",
-        }}
-      >
-        Profile Settings
-      </h1>
+    <div className="max-w-[980px] mx-auto mt-[50px] p-4">
+      <h2 className="text-4xl font-semibold mb-6">
+        Informations sur {data?.first_name}
+      </h2>
       <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
         {session?.user?.id && (
           <Controller
@@ -156,7 +152,7 @@ function ProfileSettings() {
           Save
         </Button>
       </form>
-    </>
+    </div>
   );
 }
 
