@@ -74,7 +74,7 @@ function MainLayout() {
         <Outlet />
       </main>
       {isSmallDevice ? (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white p-2 border-t border-gray-300/70">
+        <nav className="sticky bottom-0 left-0 right-0 bg-white p-2 border-t border-gray-300/70">
           <ul className="flex justify-around">
             <li className="grow flex items-center justify-center">
               <Link
