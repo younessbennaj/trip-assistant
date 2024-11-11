@@ -103,7 +103,6 @@ function MainLayout() {
           </ul>
         </nav>
       ) : null}
-      <div className="fixed"></div>
     </>
   );
 }
