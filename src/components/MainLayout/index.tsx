@@ -4,7 +4,7 @@ import { useMediaQuery } from "@uidotdev/usehooks";
 import {
   HomeIcon,
   UserCircleIcon,
-  ArrowRightEndOnRectangleIcon,
+  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import * as Avatar from "@radix-ui/react-avatar";
@@ -74,7 +74,12 @@ function MainLayout() {
         <Outlet />
       </main>
       {isSmallDevice ? (
-        <nav className="sticky bottom-0 left-0 right-0 bg-white p-2 border-t border-gray-300/70">
+        <nav
+          className="fixed bottom-0 left-0 right-0 bg-white p-2 border-t border-gray-300/70"
+          style={{
+            bottom: `env(safe-area-inset-bottom)`,
+          }}
+        >
           <ul className="flex justify-around">
             <li className="grow flex items-center justify-center">
               <Link
@@ -97,7 +102,7 @@ function MainLayout() {
                 className="p-2 w-full flex items-center justify-center"
                 to="/logout"
               >
-                <ArrowRightEndOnRectangleIcon className="h-6 w-6" />
+                <ArrowRightOnRectangleIcon className="h-6 w-6" />
               </Link>
             </li>
           </ul>
