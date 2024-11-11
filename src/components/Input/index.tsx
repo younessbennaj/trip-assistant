@@ -1,14 +1,16 @@
 import clsx from "clsx";
 import styles from "./Input.module.css";
 import { InputProps } from "./types";
-import { Input as InputComponent } from "@headlessui/react";
+import { Fieldset, Input as InputComponent, Label } from "@headlessui/react";
 
 function Input({ className, id, label, type = "text", ...props }: InputProps) {
   return (
-    <div className={clsx("flex flex-col", className)}>
-      <label htmlFor={id}>{label}</label>
+    <Fieldset className={clsx("flex flex-col", className)}>
+      <Label className="text-sm text-gray-700 text-bold mb-1" htmlFor={id}>
+        {label}
+      </Label>
       <InputComponent id={id} className={styles.input} type={type} {...props} />
-    </div>
+    </Fieldset>
   );
 }
 

@@ -9,6 +9,8 @@ import Input from "../Input";
 import { useState } from "react";
 import Button from "../Button";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import MobileDrawer from "../MobileDrawer";
+import PinboardForm from "../PinboardForm";
 
 function PinboardCollection() {
   const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
@@ -62,9 +64,25 @@ function PinboardCollection() {
             placeholder="Search your trips…"
             onChange={handlePinboardCollectionSearch}
           />
-          <Button variant="ghost">
-            <PlusIcon className="h-6 w-6" />
-          </Button>
+
+          <MobileDrawer
+            trigger={
+              <Button variant="ghost">
+                <PlusIcon className="h-6 w-6" />
+              </Button>
+            }
+          >
+            <div className="p-4 bg-white rounded-t-[16px]">
+              <div
+                aria-hidden
+                className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-8"
+              />
+              <PinboardForm
+                onSubmit={() => console.log("Submit")}
+                isSubmitting={false}
+              />
+            </div>
+          </MobileDrawer>
         </header>
         <div className="flex flex-col gap-8">
           {isLoading ? (

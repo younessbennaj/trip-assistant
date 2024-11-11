@@ -14,11 +14,13 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function DestinationCombobox({
   label,
+  placeholder,
   value,
   onSelect,
   size,
 }: {
   label?: string;
+  placeholder?: string;
   value: google.maps.places.AutocompletePrediction | null;
   onSelect: (place: google.maps.places.AutocompletePrediction) => void;
   size?: "sm" | "md" | "lg";
@@ -79,10 +81,11 @@ export default function DestinationCombobox({
         <div className="relative w-full">
           <ComboboxInput
             className={clsx(
-              "py-1.5 pr-8 pl-3 text-sm/6 border border-gray-200 rounded-lg w-full",
+              "py-3 pr-10 pl-4 text-base border border-gray-200 rounded-lg w-full",
               "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25",
               size === "lg" && "py-3 pr-10 pl-6 text-lg/6",
             )}
+            placeholder={placeholder}
             displayValue={(
               suggestion: google.maps.places.AutocompletePrediction,
             ) => suggestion?.description}
@@ -91,6 +94,7 @@ export default function DestinationCombobox({
         </div>
 
         <ComboboxOptions
+          portal={false}
           anchor="bottom"
           transition
           className={clsx(

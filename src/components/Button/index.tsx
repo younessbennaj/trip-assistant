@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 type ButtonProps = ComponentPropsWithRef<"button"> & {
   children: React.ReactNode;
-  variant: "solid" | "outline" | "ghost";
+  variant?: "solid" | "outline" | "ghost";
 };
 
 function Button({ children, variant = "solid", ...props }: ButtonProps) {

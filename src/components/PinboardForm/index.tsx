@@ -3,6 +3,7 @@ import Button from "../Button";
 // import LocationSelect from "../LocationSelect";
 import { PinboardFormInputs, PinboardFormProps } from "./types";
 import DestinationCombobox from "../DestinationCombobox";
+import Input from "../Input";
 
 function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
   const {
@@ -22,6 +23,12 @@ function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-4">
+      <Input
+        label="Name your pinboard"
+        id="name"
+        {...register("pinboardName", { required: true })}
+        type="text"
+      />
       <div>
         <Controller
           name="place"
@@ -29,6 +36,7 @@ function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
           // rules={{ required: "city is required" }}
           render={({ field }) => (
             <DestinationCombobox
+              label="Choose a destination"
               value={field.value}
               onSelect={field.onChange}
             />
