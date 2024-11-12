@@ -67,6 +67,10 @@ main {
   flex-grow: 1;
 }
 
+input {
+  -webkit-appearance: none;
+}
+
 aside {
   flex-shrink: 0;
   width: 360px;

@@ -1,5 +1,4 @@
 import { ComponentPropsWithRef } from "react";
-import { Button as ButtonComponent } from "@headlessui/react";
 import clsx from "clsx";
 
 type ButtonProps = ComponentPropsWithRef<"button"> & {
@@ -9,7 +8,7 @@ type ButtonProps = ComponentPropsWithRef<"button"> & {
 
 function Button({ children, variant = "solid", ...props }: ButtonProps) {
   return (
-    <ButtonComponent
+    <button
       {...props}
       className={clsx(
         "px-4 py-2 rounded-md",
@@ -21,7 +20,7 @@ function Button({ children, variant = "solid", ...props }: ButtonProps) {
       )}
     >
       {children}
-    </ButtonComponent>
+    </button>
   );
 }
 

@@ -1,29 +1,16 @@
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxOption,
-  ComboboxOptions,
-  Field,
-  Label,
-} from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/20/solid";
-import clsx from "clsx";
 import { useState } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useQuery } from "@tanstack/react-query";
+import Combobox from "../Combobox";
 
 export default function DestinationCombobox({
   label,
   placeholder,
-  value,
   onSelect,
-  size,
 }: {
   label?: string;
   placeholder?: string;
-  value: google.maps.places.AutocompletePrediction | null;
   onSelect: (place: google.maps.places.AutocompletePrediction) => void;
-  size?: "sm" | "md" | "lg";
 }) {
   const places = useMapsLibrary("places");
   const [query, setQuery] = useState("");
@@ -59,65 +46,22 @@ export default function DestinationCombobox({
     gcTime: 25 * 60 * 60 * 1000,
   });
 
-  const handleCityChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setQuery(event.target.value);
+  const handleCityChange = async (query: string) => {
+    setQuery(query);
   };
 
   return (
-    <Field className="w-full">
-      {label ? (
-        <Label className="text-sm text-gray-700 text-bold mb-1">{label}</Label>
-      ) : null}
-      <Combobox
-        value={value}
-        onChange={(suggestion) => {
-          if (suggestion) {
-            onSelect(suggestion);
-          }
-        }}
-      >
-        <div className="relative w-full">
-          <ComboboxInput
-            className={clsx(
-              "py-3 pr-10 pl-4 text-base border border-gray-200 rounded-lg w-full",
-              "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25",
-              size === "lg" && "py-3 pr-10 pl-6 text-lg/6",
-            )}
-            placeholder={placeholder}
-            displayValue={(
-              suggestion: google.maps.places.AutocompletePrediction,
-            ) => suggestion?.description}
-            onChange={handleCityChange}
-          />
-        </div>
-
-        <ComboboxOptions
-          portal={false}
-          anchor="bottom"
-          transition
-          className={clsx(
-            "w-[var(--input-width)] rounded-xl border border-gray-200 bg-white p-1 [--anchor-gap:var(--spacing-1)] empty:invisible",
-            "transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0",
-          )}
-        >
-          {suggestions
-            ? suggestions.map((suggestion) => (
-                <ComboboxOption
-                  key={suggestion.place_id}
-                  value={suggestion}
-                  className="group flex cursor-default items-center gap-2 rounded-lg py-1.5 px-3 select-none data-[focus]:bg-gray-100 hover:bg-gray-100 hover:cursor-pointer"
-                >
-                  <CheckIcon className="invisible size-4 fill-white group-data-[selected]:visible" />
-                  <div className="text-sm/6 text-gray-800">
-                    {suggestion.description}
-                  </div>
-                </ComboboxOption>
-              ))
-            : null}
-        </ComboboxOptions>
-      </Combobox>
-    </Field>
+    <Combobox<google.maps.places.AutocompletePrediction>
+      getOptionLabel={(option) => option.description}
+      label={label}
+      placeholder={placeholder}
+      suggestions={suggestions ? suggestions : []}
+      onChange={handleCityChange}
+      onSelectedItemChange={(selectedItem) => {
+        if (selectedItem) {
+          onSelect(selectedItem);
+        }
+      }}
+    />
   );
 }
