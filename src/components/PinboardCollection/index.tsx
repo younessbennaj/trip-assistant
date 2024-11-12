@@ -3,14 +3,11 @@ import { useAuth } from "../../hooks/use-auth";
 import SkeletonRectangle from "../SkeletonRectangle";
 import PinboardItem from "../PinboardItem";
 import { fetchPinboards } from "../../api/pinboard";
-import NewModal from "../NewModal";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import Input from "../Input";
 import { useState } from "react";
-import Button from "../Button";
-import { PlusIcon } from "@heroicons/react/24/outline";
-import MobileDrawer from "../MobileDrawer";
-import PinboardForm from "../PinboardForm";
+import CreatePinboardDialog from "../CreatePinboardDialog";
+import CreatePinboardMobileDrawer from "../CreatePinboardMobileDrawer";
 
 function PinboardCollection() {
   const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
@@ -44,20 +41,6 @@ function PinboardCollection() {
   return (
     <div className="max-w-[980px] mx-auto">
       <section aria-labelledby="pinboard-collection-heading">
-        {!isSmallDevice ? (
-          <div className="flex md:items-center justify-start md:justify-between mb-10 flex-col md:flex-row">
-            <div className="flex flex-col gap-1 mb-6 md:mb-0">
-              <h1 className="text-2xl" id="pinboard-collection-heading">
-                Your Pinboards
-              </h1>
-              <p className="text-sm">
-                Manage and organize your upcoming trips to different
-                destinations.
-              </p>
-            </div>
-            <NewModal />
-          </div>
-        ) : null}
         <header className="flex mb-8">
           <Input
             className="grow"
@@ -65,24 +48,11 @@ function PinboardCollection() {
             onChange={handlePinboardCollectionSearch}
           />
 
-          <MobileDrawer
-            trigger={
-              <Button variant="ghost">
-                <PlusIcon className="h-6 w-6" />
-              </Button>
-            }
-          >
-            <div className="p-4 bg-white rounded-t-[16px]">
-              <div
-                aria-hidden
-                className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-8"
-              />
-              <PinboardForm
-                onSubmit={() => console.log("Submit")}
-                isSubmitting={false}
-              />
-            </div>
-          </MobileDrawer>
+          {isSmallDevice ? (
+            <CreatePinboardMobileDrawer />
+          ) : (
+            <CreatePinboardDialog />
+          )}
         </header>
         <div className="flex flex-col gap-8">
           {isLoading ? (

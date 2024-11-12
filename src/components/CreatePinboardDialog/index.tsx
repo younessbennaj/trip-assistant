@@ -1,21 +1,16 @@
-import {
-  Description,
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
 import PinboardForm from "../PinboardForm";
 import Button from "../Button";
 import dayjs from "dayjs";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import { PinboardFormInputs } from "../PinboardForm/types";
 import { useAuth } from "../../hooks/use-auth";
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pinboard } from "../PinboardCollection/types";
 import { supabase } from "../../api";
 import { toast } from "sonner";
+import Dialog from "../Dialog";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 
 export interface PinboardSubmitData {
   pinboard_name: string; // User-assigned or default pinboard name
@@ -26,7 +21,7 @@ export interface PinboardSubmitData {
   duration: number;
 }
 
-function NewModal() {
+function CreatePinboardDialog() {
   const { session } = useAuth();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
@@ -112,31 +107,25 @@ function NewModal() {
   };
 
   return (
-    <>
-      <Button onClick={() => setIsOpen(true)}>Add new destination</Button>
-      <Dialog
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        className="relative z-50"
-      >
-        <DialogBackdrop className="fixed inset-0 bg-black/30" />
-        <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-          <DialogPanel className="fixed bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <DialogTitle className="font-bold text-2xl">
-              Create New Pinboard
-            </DialogTitle>
-            <Description className="mb-5">
-              Enter the details of your new pinboard.
-            </Description>
-            <PinboardForm
-              onSubmit={handleCreatePinboard}
-              isSubmitting={status === "pending"}
-            />
-          </DialogPanel>
-        </div>
-      </Dialog>
-    </>
+    <Dialog
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      description="Enter the details of your new pinboard"
+      title="Create New Pinboard"
+      trigger={
+        <Button variant="ghost">
+          <PlusIcon className="h-6 w-6" />
+        </Button>
+      }
+    >
+      <>
+        <PinboardForm
+          onSubmit={handleCreatePinboard}
+          isSubmitting={status === "pending"}
+        />
+      </>
+    </Dialog>
   );
 }
 
-export default NewModal;
+export default CreatePinboardDialog;
