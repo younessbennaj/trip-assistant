@@ -23,8 +23,8 @@ function MainLayout() {
 
   return (
     <>
-      <header className="h-[72px] border-b border-gray-300/70">
-        {!isSmallDevice ? (
+      {!isSmallDevice ? (
+        <header className="h-[72px] border-b border-gray-300/70">
           <nav className="px-[80px] py-4 w-full flex justify-between items-center">
             <Link to="/" className="mr-4">
               Home
@@ -68,8 +68,8 @@ function MainLayout() {
               </MenuItems>
             </Menu>
           </nav>
-        ) : null}
-      </header>
+        </header>
+      ) : null}
       <main className="p-4 pb-[96px]">
         <Outlet />
       </main>

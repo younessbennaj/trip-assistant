@@ -1,7 +1,7 @@
 import { ComponentPropsWithRef } from "react";
 
 export type InputProps = ComponentPropsWithRef<"input"> & {
-  label: string;
+  label?: string;
 };
 
 export interface SkeletonInputProps {
