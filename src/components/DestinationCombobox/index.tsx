@@ -24,7 +24,7 @@ export default function DestinationCombobox({
         return new Promise<google.maps.places.AutocompletePrediction[]>(
           (resolve, reject) => {
             autocompleteService.getPlacePredictions(
-              { input: query },
+              { input: query, types: ["(cities)"] },
               (predictions, status) => {
                 if (
                   status === google.maps.places.PlacesServiceStatus.OK &&

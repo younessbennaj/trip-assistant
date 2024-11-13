@@ -17,6 +17,7 @@ import { StrictMode } from "react";
 import PinboardDetails, {
   loader as pinboardDetailsLoader,
 } from "./components/PinboardDetails/index.tsx";
+import Trips from "./components/Trips/index.tsx";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <App />,
+      },
+      {
+        path: "/trips",
+        element: <Trips />,
       },
       {
         path: "/pinboard/:id",

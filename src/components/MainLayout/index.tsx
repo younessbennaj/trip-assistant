@@ -4,7 +4,7 @@ import { useMediaQuery } from "@uidotdev/usehooks";
 import {
   HomeIcon,
   UserCircleIcon,
-  ArrowRightEndOnRectangleIcon,
+  GlobeAsiaAustraliaIcon,
 } from "@heroicons/react/24/outline";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import * as Avatar from "@radix-ui/react-avatar";
@@ -52,6 +52,14 @@ function MainLayout() {
                 <MenuItem>
                   <Link
                     className="block py-3 px-4 hover:bg-gray-100"
+                    to="/trips"
+                  >
+                    My Trips
+                  </Link>
+                </MenuItem>
+                <MenuItem>
+                  <Link
+                    className="block py-3 px-4 hover:bg-gray-100"
                     to="/profile"
                   >
                     Profile Settings
@@ -74,14 +82,22 @@ function MainLayout() {
         <Outlet />
       </main>
       {isSmallDevice ? (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white p-2 border-t border-gray-300/70">
+        <nav className="fixed bottom-0 left-0 right-0 bg-white py-3 px-2 border-t border-gray-300/70">
           <ul className="flex justify-around">
             <li className="grow flex items-center justify-center">
               <Link
                 className="p-2 w-full flex items-center justify-center"
                 to="/"
               >
-                <HomeIcon className="h-6 w-6" />
+                <HomeIcon className="h-7 w-7" />
+              </Link>
+            </li>
+            <li className="grow flex items-center justify-center">
+              <Link
+                className="p-2 w-full flex items-center justify-center"
+                to="/trips"
+              >
+                <GlobeAsiaAustraliaIcon className="h-7 w-7" />
               </Link>
             </li>
             <li className="grow flex items-center justify-center">
@@ -89,15 +105,7 @@ function MainLayout() {
                 className="p-2 w-full flex items-center justify-center"
                 to="/profile"
               >
-                <UserCircleIcon className="h-6 w-6" />
-              </Link>
-            </li>
-            <li className="grow flex items-center justify-center">
-              <Link
-                className="p-2 w-full flex items-center justify-center"
-                to="/logout"
-              >
-                <ArrowRightEndOnRectangleIcon className="h-6 w-6" />
+                <UserCircleIcon className="h-7 w-7" />
               </Link>
             </li>
           </ul>
