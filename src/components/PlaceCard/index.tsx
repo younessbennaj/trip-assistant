@@ -52,7 +52,7 @@ function PlaceCard({ place }: { place: google.maps.places.PlaceResult }) {
 
       {/* Action buttons */}
       <div className="px-4 pb-4 flex items-center justify-between">
-        <Button>Add to favorite</Button>
+        <Button>Save</Button>
       </div>
     </div>
   );

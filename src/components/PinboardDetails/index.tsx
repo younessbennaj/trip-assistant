@@ -2,9 +2,9 @@ import { Params, useLoaderData } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPinboardById } from "../../api/pinboard";
 import dayjs from "dayjs";
-import { searchCategories } from "../../constants";
 import { useApiIsLoaded, useMapsLibrary } from "@vis.gl/react-google-maps";
 import PlaceCard from "../PlaceCard";
+import * as Tabs from "@radix-ui/react-tabs";
 
 export async function loader({ params }: { params: Params<"id"> }) {
   return {
@@ -86,27 +86,46 @@ function PinboardDetails() {
         <span className="mx-2">•</span>
         <p className="text-sm md:text-base">{pinboardData.duration} days</p>
       </div>
-      {placesLoading ? (
-        <p>Loading nearby places...</p>
-      ) : placesError || !dataPlaces || dataPlaces.length === 0 ? (
-        <p>No places found near this pinboard.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {dataPlaces.map((place) => (
-            <PlaceCard key={place.place_id} place={place} />
-          ))}
-        </div>
-      )}
-      <div className="flex flex-col gap-4">
-        {searchCategories.map((category) => (
-          <div key={category.label}>
-            <h3>{category.label}</h3>
-            <div>
-              <p>Some cards here</p>
+      <Tabs.Root defaultValue="my_pins">
+        <Tabs.List
+          className="
+          flex gap-4
+          border-b border-gray-200
+          mb-4
+          pb-4
+          text-sm
+        "
+        >
+          <Tabs.Trigger
+            className="data-[state=active]:text-blue-600"
+            value="my_pins"
+          >
+            My pins
+          </Tabs.Trigger>
+          <Tabs.Trigger
+            className="data-[state=active]:text-blue-600"
+            value="recommended"
+          >
+            Recommended
+          </Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.Content value="my_pins">
+          <p>No saved pins yet...</p>
+        </Tabs.Content>
+        <Tabs.Content value="recommended">
+          {placesLoading ? (
+            <p>Loading nearby places...</p>
+          ) : placesError || !dataPlaces || dataPlaces.length === 0 ? (
+            <p>No places found near this pinboard.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {dataPlaces.map((place) => (
+                <PlaceCard key={place.place_id} place={place} />
+              ))}
             </div>
-          </div>
-        ))}
-      </div>
+          )}
+        </Tabs.Content>
+      </Tabs.Root>
     </div>
   );
 }
