@@ -45,10 +45,6 @@ function PinboardDetails() {
         (resolve, reject) => {
           service.nearbySearch(
             {
-              location: {
-                lat: pinboardData.latitude,
-                lng: pinboardData.longitude,
-              },
               radius: 1000, // Rayon de recherche en mètres
               type: "cafe",
             },
