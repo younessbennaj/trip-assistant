@@ -2,7 +2,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Button from "../Button";
 import { PinboardFormInputs, PinboardFormProps } from "./types";
 import DestinationCombobox from "../DestinationCombobox";
-import Input from "../Input";
+import styles from "../Input/Input.module.css";
 
 function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
   const {
@@ -13,27 +13,20 @@ function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
   } = useForm<PinboardFormInputs>({
     defaultValues: {
       place: null,
+      startDate: "",
+      endDate: "",
     },
   });
 
   const onSubmitHandler: SubmitHandler<PinboardFormInputs> = (data) => {
-    console.log(data);
-    return;
+    console.log("data", data);
     onSubmit({ ...data });
   };
 
+  console.log("errors", errors);
+
   return (
     <form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-4">
-      <Input
-        label="Name your pinboard"
-        placeholder="My next adventure"
-        id="pinboardName"
-        {...register("pinboardName", { required: true })}
-        type="text"
-      />
-      {errors.pinboardName && (
-        <span className="text-red-500">Start date is required</span>
-      )}
       <div>
         <Controller
           name="place"
@@ -52,9 +45,15 @@ function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
         )}
       </div>
       <div>
-        <Input
-          label="Start date"
-          id="date"
+        <label
+          className="text-sm text-gray-700 text-bold mb-1"
+          htmlFor="startDate"
+        >
+          Start date
+        </label>
+        <input
+          className={styles.input}
+          id="startDate"
           {...register("startDate", { required: true })}
           type="date"
           placeholder="20/09/2024"
@@ -64,12 +63,20 @@ function PinboardForm({ isSubmitting, onSubmit }: PinboardFormProps) {
         )}
       </div>
       <div>
-        <Input
-          label="End date"
+        <label
+          className="text-sm text-gray-700 text-bold mb-1"
+          htmlFor="endDate"
+        >
+          End date
+        </label>
+        <input
+          className={styles.input}
+          id="endDate"
           {...register("endDate", { required: true })}
           placeholder="20/09/2024"
           type="date"
         />
+
         {errors.endDate && (
           <span className="text-red-500">End date is required</span>
         )}

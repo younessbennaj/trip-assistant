@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SignUp from "./components/SignUp/index.tsx";
-import App from "./App.tsx";
 import SignIn from "./components/SignIn/index.tsx";
 import AuthProvider from "./components/AuthProvider/index.tsx";
 import Logout from "./components/Logout/index.tsx";
@@ -25,12 +24,12 @@ const router = createBrowserRouter([
   {
     element: <MainLayout />,
     children: [
+      // {
+      //   path: "/",
+      //   element: <App />,
+      // },
       {
         path: "/",
-        element: <App />,
-      },
-      {
-        path: "/trips",
         element: <Trips />,
       },
       {
